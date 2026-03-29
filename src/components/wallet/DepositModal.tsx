@@ -63,28 +63,28 @@ export default function DepositModal({ onClose, currentBalance = 0 }: DepositMod
   const modal = (
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.75)' }}
+      style={{ background: 'var(--shadow-overlay)' }}
       onClick={onClose}
     >
       <div
         className="w-full max-w-sm rounded-2xl overflow-hidden"
         style={{
-          background: '#13161f',
-          border: '1px solid rgba(255,255,255,0.1)',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.8)',
+          background: 'var(--bg-elevated)',
+          border: '1px solid var(--border-medium)',
+          boxShadow: '0 32px 80px var(--shadow-overlay)',
         }}
         onClick={e => e.stopPropagation()}
       >
         {/* ── Header ── */}
         <div
           className="flex items-center justify-between px-5 py-4"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+          style={{ borderBottom: '1px solid var(--border)' }}
         >
           <div>
-            <h2 className="text-base font-black" style={{ color: '#fff' }}>Déposer sur FLAT EARTH</h2>
+            <h2 className="text-base font-black" style={{ color: 'var(--text-primary)' }}>Déposer sur FLAT EARTH</h2>
             {currentBalance > 0 && (
-              <p className="text-xs mt-0.5" style={{ color: '#4a5380' }}>
-                Solde actuel : <span style={{ color: '#00e676', fontWeight: 700 }}>{(currentBalance / 100).toFixed(2)} €</span>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                Solde actuel : <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>{(currentBalance / 100).toFixed(2)} €</span>
               </p>
             )}
           </div>
@@ -102,9 +102,9 @@ export default function DepositModal({ onClose, currentBalance = 0 }: DepositMod
           {/* ── Montant — champ discret ── */}
           <div
             className="flex items-center gap-2 rounded-xl px-4 py-3"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1.5px solid rgba(255,255,255,0.1)' }}
+            style={{ background: 'var(--bg-input)', border: '1.5px solid var(--border-medium)' }}
           >
-            <span className="text-sm font-semibold" style={{ color: '#4a5380' }}>Montant</span>
+            <span className="text-sm font-semibold" style={{ color: 'var(--text-muted)' }}>Montant</span>
             <input
               type="number"
               min="1"
@@ -112,9 +112,9 @@ export default function DepositModal({ onClose, currentBalance = 0 }: DepositMod
               value={amount}
               onChange={e => { setAmount(e.target.value); setError(''); }}
               className="flex-1 bg-transparent outline-none text-right font-black text-base"
-              style={{ color: '#fff', caretColor: '#00e676' }}
+              style={{ color: 'var(--text-primary)', caretColor: 'var(--accent-green)' }}
             />
-            <span className="text-sm font-bold" style={{ color: '#6b7db3' }}>€</span>
+            <span className="text-sm font-bold" style={{ color: 'var(--text-secondary)' }}>€</span>
           </div>
 
           {/* ── Méthodes ── */}
@@ -125,7 +125,7 @@ export default function DepositModal({ onClose, currentBalance = 0 }: DepositMod
                 onClick={handleDeposit}
                 disabled={loading}
                 className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-left transition-all hover:bg-white/[0.06] active:scale-[0.99]"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
+                style={{ background: 'var(--bg-item)', border: '1px solid var(--border)' }}
               >
                 <div
                   className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
@@ -137,8 +137,8 @@ export default function DepositModal({ onClose, currentBalance = 0 }: DepositMod
                   }
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold" style={{ color: '#e0e6ff' }}>{m.label}</p>
-                  <p className="text-xs mt-0.5" style={{ color: '#4a5380' }}>{m.desc}</p>
+                  <p className="text-sm font-bold" style={{ color: 'var(--text-bright)' }}>{m.label}</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{m.desc}</p>
                 </div>
                 <span className="text-xs font-black shrink-0" style={{ color: '#00e676' }}>
                   {parseFloat(amount) > 0 ? `${parseFloat(amount).toFixed(0)} €` : '—'}
@@ -157,7 +157,7 @@ export default function DepositModal({ onClose, currentBalance = 0 }: DepositMod
             </p>
           )}
 
-          <p className="text-center text-[11px] pb-1" style={{ color: '#2a3050' }}>
+          <p className="text-center text-[11px] pb-1" style={{ color: 'var(--text-dim)' }}>
             Paiement sécurisé via Stripe · Crédité instantanément
           </p>
         </div>

@@ -44,7 +44,7 @@ function MultiLineChart({ market }: { market: IMarket }) {
         {series.map((s) => (
           <span key={s.label} className="flex items-center gap-1 text-xs">
             <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: s.color }} />
-            <span style={{ color: '#a0aad0' }}>{s.label}</span>
+            <span style={{ color: 'var(--text-secondary)' }}>{s.label}</span>
             <span className="font-black" style={{ color: s.color }}>{s.probability}%</span>
           </span>
         ))}
@@ -55,10 +55,10 @@ function MultiLineChart({ market }: { market: IMarket }) {
             <line
               x1={PAD.left} y1={yScale(v)}
               x2={W - PAD.right} y2={yScale(v)}
-              stroke="rgba(255,255,255,0.07)"
+              stroke="var(--border)"
               strokeDasharray="3 4"
             />
-            <text x={W - PAD.right + 8} y={yScale(v) + 4} fontSize="9" fill="rgba(255,255,255,0.3)" fontFamily="Inter">
+            <text x={W - PAD.right + 8} y={yScale(v) + 4} fontSize="9" fill="var(--text-muted)" fontFamily="Inter">
               {v}%
             </text>
           </g>
@@ -66,7 +66,7 @@ function MultiLineChart({ market }: { market: IMarket }) {
         {dayLabels.map((label, i) => {
           const x = PAD.left + ((i / 4) * cW);
           return (
-            <text key={i} x={x} y={H - 4} fontSize="9" fill="rgba(255,255,255,0.25)" textAnchor="middle" fontFamily="Inter">
+            <text key={i} x={x} y={H - 4} fontSize="9" fill="var(--text-dim)" textAnchor="middle" fontFamily="Inter">
               {label}
             </text>
           );
@@ -123,26 +123,26 @@ function HeroSlider({ markets }: { markets: IMarket[] }) {
     <div
       className="relative rounded-2xl overflow-hidden"
       style={{
-        background: 'rgba(12,14,22,0.99)',
-        border: '1px solid rgba(255,255,255,0.09)',
-        boxShadow: '0 8px 48px rgba(0,0,0,0.5)',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border)',
+        boxShadow: '0 8px 48px var(--shadow-overlay)',
       }}
     >
       <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
         <button
           onClick={() => go('prev')}
           className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:brightness-125"
-          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }}
+          style={{ background: 'var(--bg-item-hover)', border: '1px solid var(--border-medium)', color: 'var(--text-primary)' }}
         >
           <ChevronLeft size={14} />
         </button>
-        <span className="text-xs font-semibold" style={{ color: '#6b7db3' }}>
+        <span className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>
           {idx + 1} / {total}
         </span>
         <button
           onClick={() => go('next')}
           className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:brightness-125"
-          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }}
+          style={{ background: 'var(--bg-item-hover)', border: '1px solid var(--border-medium)', color: 'var(--text-primary)' }}
         >
           <ChevronRight size={14} />
         </button>
@@ -151,13 +151,13 @@ function HeroSlider({ markets }: { markets: IMarket[] }) {
       <Link href={`/market/${market._id}`}>
         <div key={market._id} className={`flex flex-col lg:flex-row ${animClass}`}>
           <div className="flex-1 min-w-0 p-6 pr-4">
-            <h2 className="text-2xl font-black leading-tight mb-5 pr-24" style={{ color: '#fff' }}>
+            <h2 className="text-2xl font-black leading-tight mb-5 pr-24" style={{ color: 'var(--text-primary)' }}>
               {market.title}
             </h2>
             <div className="mb-5">
               <div
                 className="grid mb-1 px-2 py-1 text-xs font-semibold uppercase tracking-wider"
-                style={{ gridTemplateColumns: '1fr 80px 80px', color: '#4a5380' }}
+                style={{ gridTemplateColumns: '1fr 80px 80px', color: 'var(--text-muted)' }}
               >
                 <span>Résultat</span>
                 <span className="text-center">Cote</span>
@@ -169,12 +169,12 @@ function HeroSlider({ markets }: { markets: IMarket[] }) {
                   className="grid items-center px-2 py-2.5 rounded-xl mb-1 transition-all hover:brightness-110"
                   style={{
                     gridTemplateColumns: '1fr 80px 80px',
-                    background: 'rgba(255,255,255,0.03)',
+                    background: 'var(--bg-item)',
                     borderBottom: `2px solid ${OPTION_COLORS[oi]}`,
                   }}
                 >
-                  <span className="text-sm font-semibold" style={{ color: '#e0e6ff' }}>{opt.label}</span>
-                  <span className="text-sm font-bold text-center" style={{ color: '#6b7db3' }}>{calcOdds(opt.probability)}</span>
+                  <span className="text-sm font-semibold" style={{ color: 'var(--text-bright)' }}>{opt.label}</span>
+                  <span className="text-sm font-bold text-center" style={{ color: 'var(--text-secondary)' }}>{calcOdds(opt.probability)}</span>
                   <div className="flex justify-end">
                     <span
                       className="font-black text-sm rounded-full px-2.5 py-0.5"
@@ -192,9 +192,9 @@ function HeroSlider({ markets }: { markets: IMarket[] }) {
                 </div>
               ))}
             </div>
-            <div className="flex items-center gap-4 text-xs mb-4" style={{ color: '#4a5380' }}>
+            <div className="flex items-center gap-4 text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
               <span>
-                <span className="font-semibold" style={{ color: '#8892c4' }}>{formatCoins(market.totalVolume)}</span> € vol.
+                <span className="font-semibold" style={{ color: 'var(--text-secondary)' }}>{formatCoins(market.totalVolume)}</span> € vol.
               </span>
               {market.marketCount && <span>{market.marketCount} marchés</span>}
               <span className="flex items-center gap-1"><Clock size={10} /> {timeLeft}</span>
@@ -206,8 +206,8 @@ function HeroSlider({ markets }: { markets: IMarket[] }) {
               )}
             </div>
             {market.contextNews && (
-              <p className="text-xs leading-relaxed" style={{ color: '#4a5380' }}>
-                <span className="font-semibold mr-1" style={{ color: '#6b7db3' }}>Contexte ·</span>
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                <span className="font-semibold mr-1" style={{ color: 'var(--text-secondary)' }}>Contexte ·</span>
                 {market.contextNews}
               </p>
             )}
@@ -217,8 +217,8 @@ function HeroSlider({ markets }: { markets: IMarket[] }) {
             className="hidden lg:flex flex-col justify-center gap-3 p-5 shrink-0"
             style={{
               width: 440,
-              borderLeft: '1px solid rgba(255,255,255,0.06)',
-              background: 'rgba(6,8,14,0.6)',
+              borderLeft: '1px solid var(--border-light)',
+              background: 'var(--bg-deep)',
               position: 'relative',
             }}
           >
@@ -239,7 +239,7 @@ function HeroSlider({ markets }: { markets: IMarket[] }) {
             style={{
               width: i === idx ? 20 : 6,
               height: 6,
-              background: i === idx ? '#00e676' : 'rgba(255,255,255,0.15)',
+              background: i === idx ? 'var(--accent-green)' : 'var(--border-medium)',
             }}
           />
         ))}
@@ -258,14 +258,14 @@ function CategorySection({ category, markets }: { category: MarketCategory; mark
   return (
     <section className="mb-8">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-bold text-sm flex items-center gap-2" style={{ color: '#fff' }}>
+        <h2 className="font-bold text-sm flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
           <span className="text-base">{icon}</span>
           {label}
         </h2>
         <Link
           href={`/category/${category}`}
-          className="flex items-center gap-1 text-xs font-medium transition-all"
-          style={{ color: '#4a5380' }}
+          className="flex items-center gap-1 text-xs font-medium transition-all hover:brightness-110"
+          style={{ color: 'var(--text-muted)' }}
         >
           Voir tout <ChevronRight size={12} />
         </Link>
@@ -295,8 +295,8 @@ function RightSidebar({ markets }: { markets: IMarket[] }) {
           <div
             className="rounded-2xl overflow-hidden cursor-pointer transition-all hover:brightness-110"
             style={{
-              background: 'linear-gradient(145deg, #0c2415 0%, #071510 60%, #050d08 100%)',
-              border: '1px solid rgba(0,230,118,0.18)',
+              background: 'var(--bg-card)',
+              border: '1px solid rgba(0,230,118,0.25)',
             }}
           >
             <div className="p-4">
@@ -311,14 +311,14 @@ function RightSidebar({ markets }: { markets: IMarket[] }) {
                   </span>
                 )}
               </div>
-              <p className="text-base font-black leading-snug mb-3" style={{ color: '#fff' }}>
+              <p className="text-base font-black leading-snug mb-3" style={{ color: 'var(--text-primary)' }}>
                 {featuredMarket.title}
               </p>
               {/* Options mini */}
               <div className="flex flex-col gap-1.5 mb-3">
                 {featuredMarket.options.slice(0, 2).map((opt, i) => (
                   <div key={String(opt._id)} className="flex items-center gap-2">
-                    <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                    <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--bg-item-hover)' }}>
                       <div
                         className="h-full rounded-full"
                         style={{ width: `${opt.probability}%`, background: i === 0 ? '#00e676' : '#4fc3f7', transition: 'width 0.5s ease' }}
@@ -327,12 +327,12 @@ function RightSidebar({ markets }: { markets: IMarket[] }) {
                     <span className="text-xs font-black w-8 text-right shrink-0" style={{ color: i === 0 ? '#00e676' : '#4fc3f7' }}>
                       {opt.probability}%
                     </span>
-                    <span className="text-xs shrink-0 truncate" style={{ color: '#6b7db3', maxWidth: 80 }}>{opt.label}</span>
+                    <span className="text-xs shrink-0 truncate" style={{ color: 'var(--text-secondary)', maxWidth: 80 }}>{opt.label}</span>
                   </div>
                 ))}
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-xs" style={{ color: '#3a5040' }}>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                   {formatCoins(featuredMarket.totalVolume)} € vol.
                 </span>
                 <span className="flex items-center gap-1 text-xs font-bold" style={{ color: '#00e676' }}>
@@ -347,14 +347,14 @@ function RightSidebar({ markets }: { markets: IMarket[] }) {
       {/* ── Tendances ── */}
       <div
         className="rounded-2xl p-4"
-        style={{ background: '#0e1219', border: '1px solid rgba(255,255,255,0.07)' }}
+        style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
       >
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-black text-sm flex items-center gap-1.5" style={{ color: '#fff' }}>
+          <h3 className="font-black text-sm flex items-center gap-1.5" style={{ color: 'var(--text-primary)' }}>
             <Flame size={13} style={{ color: '#ff6b35' }} />
             Tendances
           </h3>
-          <Link href="/" className="text-xs font-semibold transition-colors hover:text-white" style={{ color: '#4a5380' }}>
+          <Link href="/" className="text-xs font-semibold transition-all hover:brightness-110" style={{ color: 'var(--text-muted)' }}>
             Tout voir
           </Link>
         </div>
@@ -364,35 +364,35 @@ function RightSidebar({ markets }: { markets: IMarket[] }) {
               key={String(m._id)}
               href={`/market/${m._id}`}
               className="flex items-start gap-2.5 py-2.5 group"
-              style={{ borderBottom: i < trending.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
+              style={{ borderBottom: i < trending.length - 1 ? '1px solid var(--border-light)' : 'none' }}
             >
               {/* Rang */}
               <span
                 className="text-xs font-black w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5"
-                style={{ background: 'rgba(255,255,255,0.06)', color: '#4a5380' }}
+                style={{ background: 'var(--bg-item-hover)', color: 'var(--text-muted)' }}
               >
                 {i + 1}
               </span>
               {/* Titre + option */}
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold leading-snug group-hover:text-white transition-colors line-clamp-2" style={{ color: '#c0c8e8' }}>
+                <p className="text-xs font-semibold leading-snug transition-colors line-clamp-2" style={{ color: 'var(--text-bright)' }}>
                   {m.title}
                 </p>
                 {/* Mini barre proba */}
                 <div className="flex items-center gap-2 mt-1.5">
-                  <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--bg-item-hover)' }}>
                     <div
                       className="h-full rounded-full"
-                      style={{ width: `${m.options[0]?.probability ?? 50}%`, background: '#00e676' }}
+                      style={{ width: `${m.options[0]?.probability ?? 50}%`, background: 'var(--accent-green)' }}
                     />
                   </div>
-                  <span className="text-xs shrink-0" style={{ color: '#4a5380' }}>{m.options[0]?.label}</span>
+                  <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>{m.options[0]?.label}</span>
                 </div>
               </div>
               {/* % + delta */}
               <div className="flex flex-col items-end shrink-0 gap-0.5">
-                <span className="text-sm font-black" style={{ color: '#00e676' }}>{m.options[0]?.probability}%</span>
-                <span className="text-xs font-semibold" style={{ color: '#2a6040' }}>
+                <span className="text-sm font-black" style={{ color: 'var(--accent-green)' }}>{m.options[0]?.probability}%</span>
+                <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
                   ▲ {((m.options[0]?.probability ?? 50) % 13) + 1}
                 </span>
               </div>
@@ -404,11 +404,11 @@ function RightSidebar({ markets }: { markets: IMarket[] }) {
       {/* ── Top Volume ── */}
       <div
         className="rounded-2xl p-4"
-        style={{ background: '#0e1219', border: '1px solid rgba(255,255,255,0.07)' }}
+        style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
       >
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-black text-sm flex items-center gap-1.5" style={{ color: '#fff' }}>
-            <TrendingUp size={13} style={{ color: '#00e676' }} />
+          <h3 className="font-black text-sm flex items-center gap-1.5" style={{ color: 'var(--text-primary)' }}>
+            <TrendingUp size={13} style={{ color: 'var(--accent-green)' }} />
             Top Volume
           </h3>
         </div>
@@ -418,19 +418,19 @@ function RightSidebar({ markets }: { markets: IMarket[] }) {
               key={String(m._id)}
               href={`/market/${m._id}`}
               className="flex items-center gap-2.5 py-2.5 group"
-              style={{ borderBottom: i < top5.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
+              style={{ borderBottom: i < top5.length - 1 ? '1px solid var(--border-light)' : 'none' }}
             >
               <span
                 className="text-xs font-black w-5 h-5 rounded-md flex items-center justify-center shrink-0"
-                style={{ background: i === 0 ? 'rgba(255,215,0,0.1)' : 'rgba(255,255,255,0.06)', color: i === 0 ? '#ffd700' : '#4a5380' }}
+                style={{ background: i === 0 ? 'rgba(255,215,0,0.1)' : 'var(--bg-item-hover)', color: i === 0 ? '#ffd700' : 'var(--text-muted)' }}
               >
                 {i + 1}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold truncate group-hover:text-white transition-colors" style={{ color: '#c0c8e8' }}>
+                <p className="text-xs font-semibold truncate transition-colors" style={{ color: 'var(--text-bright)' }}>
                   {m.title}
                 </p>
-                <p className="text-xs mt-0.5 font-mono" style={{ color: '#3a4260' }}>
+                <p className="text-xs mt-0.5 font-mono" style={{ color: 'var(--text-dim)' }}>
                   {formatCoins(m.totalVolume)} € vol.
                 </p>
               </div>
@@ -456,7 +456,7 @@ function SkeletonCard() {
   return (
     <div
       className="rounded-2xl animate-pulse"
-      style={{ height: 160, background: 'rgba(22,27,38,0.8)', border: '1px solid rgba(255,255,255,0.05)' }}
+      style={{ height: 160, background: 'var(--bg-card)', border: '1px solid var(--border-light)' }}
     />
   );
 }
@@ -493,7 +493,7 @@ function HomePageInner() {
   const liveCount = markets.filter(m => m.status === 'live').length;
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ background: '#0f1117' }}>
+    <div className="flex flex-col min-h-screen" style={{ background: 'var(--bg-primary)' }}>
       <Header isLoggedIn={false} coins={0} liveCount={liveCount} />
 
       {depositOpen && <DepositModal onClose={() => setDepositOpen(false)} />}
@@ -506,7 +506,7 @@ function HomePageInner() {
             {/* ── Hero Slider ─────────────────────────────────────────── */}
             <div className="mb-6">
               {loading ? (
-                <div className="rounded-2xl animate-pulse" style={{ height: 340, background: 'rgba(22,27,38,0.8)', border: '1px solid rgba(255,255,255,0.05)' }} />
+                <div className="rounded-2xl animate-pulse" style={{ height: 340, background: 'var(--bg-card)', border: '1px solid var(--border-light)' }} />
               ) : (
                 <HeroSlider markets={markets} />
               )}

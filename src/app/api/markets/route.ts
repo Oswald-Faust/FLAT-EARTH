@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Market from '@/models/Market';
+import '@/models/User'; // requis pour .populate('createdBy') en environnement serverless
 
 export async function GET(req: NextRequest) {
   try {

@@ -92,7 +92,7 @@ function KalshiChart({ series, loading }: { series: ChartSeries[]; loading: bool
   }
   if (!series.length || !series[0]?.data.length) {
     return (
-      <div className="flex items-center justify-center text-sm" style={{ height: 220, color: '#4a5380' }}>
+      <div className="flex items-center justify-center text-sm" style={{ height: 220, color: 'var(--text-muted)' }}>
         Aucune donnée disponible pour cette période.
       </div>
     );
@@ -134,14 +134,14 @@ function KalshiChart({ series, loading }: { series: ChartSeries[]; loading: bool
           >
             <div
               className="rounded-xl px-3 py-2 text-xs whitespace-nowrap"
-              style={{ background: '#1a2035', border: '1px solid rgba(255,255,255,0.12)', color: '#e0e6ff' }}
+              style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-medium)', color: 'var(--text-bright)' }}
             >
-              <div className="font-bold mb-1.5" style={{ color: '#6b7db3' }}>{lbl}</div>
+              <div className="font-bold mb-1.5" style={{ color: 'var(--text-secondary)' }}>{lbl}</div>
               {series.map(s => (
                 <div key={s.optionId} className="flex items-center gap-2 mb-0.5">
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ background: s.color }} />
                   <span style={{ color: s.color }}>{s.label}</span>
-                  <span className="font-black ml-3" style={{ color: '#fff' }}>
+                  <span className="font-black ml-3" style={{ color: 'var(--text-primary)' }}>
                     {s.data[hoverIdx]?.probability ?? 0}%
                   </span>
                 </div>
@@ -163,11 +163,11 @@ function KalshiChart({ series, loading }: { series: ChartSeries[]; loading: bool
         {yTicks.map(v => (
           <g key={v}>
             <line x1={PL} x2={VW - PR} y1={scaleY(v)} y2={scaleY(v)}
-              stroke="rgba(255,255,255,0.06)" strokeWidth="1"
+              stroke="var(--border-light)" strokeWidth="1"
               strokeDasharray={v === 0 ? 'none' : '3,5'}
             />
             <text x={VW - PR + 8} y={scaleY(v) + 4}
-              fill="rgba(255,255,255,0.3)" fontSize="10" fontFamily="Inter, sans-serif">
+              fill="var(--text-muted)" fontSize="10" fontFamily="Inter, sans-serif">
               {v}%
             </text>
           </g>
@@ -176,7 +176,7 @@ function KalshiChart({ series, loading }: { series: ChartSeries[]; loading: bool
         {/* Labels axe X (vraies dates) */}
         {xLabelIdxs.map(i => (
           <text key={i} x={xOf(i, n)} y={VH - 6}
-            textAnchor="middle" fill="rgba(255,255,255,0.25)"
+            textAnchor="middle" fill="var(--text-dim)"
             fontSize="10" fontFamily="Inter, sans-serif">
             {fmtTime(times[i], spanMs)}
           </text>
@@ -228,12 +228,12 @@ function KalshiChart({ series, loading }: { series: ChartSeries[]; loading: bool
             <line
               x1={xOf(hoverIdx, n)} x2={xOf(hoverIdx, n)}
               y1={PT} y2={VH - PB}
-              stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="3,3"
+              stroke="var(--border-medium)" strokeWidth="1" strokeDasharray="3,3"
             />
             {series.map(s => (
               <circle key={s.optionId}
                 cx={xOf(hoverIdx, n)} cy={scaleY(s.data[hoverIdx].probability)}
-                r="5" fill={s.color} stroke="#0f1117" strokeWidth="2"
+                r="5" fill={s.color} stroke="var(--bg-primary)" strokeWidth="2"
               />
             ))}
           </g>
@@ -249,15 +249,15 @@ function Accordion({ title, icon, children, defaultOpen = false }: {
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+    <div style={{ borderTop: '1px solid var(--border)' }}>
       <button onClick={() => setOpen(o => !o)} className="flex items-center justify-between w-full py-3.5 text-left">
-        <span className="flex items-center gap-2 text-sm font-semibold" style={{ color: '#e0e6ff' }}>
-          <span style={{ color: '#4a5380' }}>{icon}</span>
+        <span className="flex items-center gap-2 text-sm font-semibold" style={{ color: 'var(--text-bright)' }}>
+          <span style={{ color: 'var(--text-muted)' }}>{icon}</span>
           {title}
         </span>
         {open
-          ? <ChevronUp size={14} style={{ color: '#4a5380' }} />
-          : <ChevronDown size={14} style={{ color: '#4a5380' }} />
+          ? <ChevronUp size={14} style={{ color: 'var(--text-muted)' }} />
+          : <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} />
         }
       </button>
       {open && <div className="pb-4">{children}</div>}
@@ -353,15 +353,15 @@ function TradePanel({
   const insufficientFunds = isLoggedIn && walletBalance !== null && walletBalance < effectiveAmt * 100;
 
   return (
-    <div className="rounded-2xl overflow-hidden flex flex-col" style={{ background: '#0e1219', border: '1px solid rgba(255,255,255,0.08)' }}>
+    <div className="rounded-2xl overflow-hidden flex flex-col" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-medium)' }}>
 
       {/* ── Header ── */}
-      <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg shrink-0" style={{ background: 'rgba(255,255,255,0.07)' }}>
+      <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: '1px solid var(--border-light)' }}>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg shrink-0" style={{ background: 'var(--bg-item-hover)' }}>
           {CATEGORY_ICONS[market.category]}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-xs truncate" style={{ color: '#4a5380' }}>{market.title}</p>
+          <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{market.title}</p>
           <p className="text-xs font-black mt-0.5" style={{ color: sideColor }}>
             Acheter · {opt.label}
           </p>
@@ -369,10 +369,10 @@ function TradePanel({
       </div>
 
       {/* ── Tabs Acheter / Vendre ── */}
-      <div className="flex px-4 pt-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="flex px-4 pt-2" style={{ borderBottom: '1px solid var(--border-light)' }}>
           <button
             className="px-3 pb-2 text-sm font-bold"
-            style={{ color: '#fff', borderBottom: `2px solid ${sideColor}` }}
+            style={{ color: 'var(--text-primary)', borderBottom: `2px solid ${sideColor}` }}
           >
             Parier
           </button>
@@ -384,9 +384,9 @@ function TradePanel({
         {isLoggedIn && walletBalance !== null && (
           <div
             className="flex items-center justify-between rounded-xl px-3 py-2"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+            style={{ background: 'var(--bg-item)', border: '1px solid var(--border-light)' }}
           >
-            <span className="text-xs" style={{ color: '#4a5380' }}>Solde disponible</span>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Solde disponible</span>
             <span className="text-xs font-black" style={{ color: walletBalance > 0 ? '#00e676' : '#f44336' }}>
               {(walletBalance / 100).toFixed(2)} €
             </span>
@@ -402,9 +402,9 @@ function TradePanel({
                 onClick={() => { setSelectedIdx(i); setResult(null); }}
                 className="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all"
                 style={{
-                  background: selectedIdx === i ? `${BADGE_COLORS[i]}22` : 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${selectedIdx === i ? BADGE_COLORS[i] + '70' : 'rgba(255,255,255,0.07)'}`,
-                  color: selectedIdx === i ? BADGE_COLORS[i] : '#6b7db3',
+                  background: selectedIdx === i ? `${BADGE_COLORS[i]}22` : 'var(--bg-item)',
+                  border: `1px solid ${selectedIdx === i ? BADGE_COLORS[i] + '70' : 'var(--border)'}`,
+                  color: selectedIdx === i ? BADGE_COLORS[i] : 'var(--text-secondary)',
                 }}
               >
                 {o.label}
@@ -444,15 +444,15 @@ function TradePanel({
         {/* ── Bloc Montant (style Polymarket) ── */}
         <div
           className="rounded-xl"
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '12px 14px' }}
+          style={{ background: 'var(--bg-item)', border: '1px solid var(--border-medium)', padding: '12px 14px' }}
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-semibold" style={{ color: '#8d97b8' }}>Montant</p>
-              <p className="text-xs mt-0.5" style={{ color: '#3a4260' }}>Min. 1 €</p>
+              <p className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Montant</p>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Min. 1 €</p>
             </div>
             <div className="flex items-center gap-1">
-              <span className="font-black" style={{ color: '#3a4260', fontSize: 20 }}>€</span>
+              <span className="font-black" style={{ color: 'var(--text-muted)', fontSize: 20 }}>€</span>
               <input
                 type="number"
                 min="1"
@@ -461,7 +461,7 @@ function TradePanel({
                 onChange={e => handleAmountChange(e.target.value)}
                 placeholder="1"
                 className="bg-transparent outline-none font-black text-right"
-                style={{ color: '#fff', fontSize: 30, width: 110 }}
+                style={{ color: 'var(--text-primary)', fontSize: 30, width: 110 }}
               />
             </div>
           </div>
@@ -472,7 +472,7 @@ function TradePanel({
                 key={a}
                 onClick={() => handleAmountChange(String((numAmount || 0) + a))}
                 className="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all"
-                style={{ background: 'rgba(255,255,255,0.07)', color: '#8d97b8' }}
+                style={{ background: 'var(--bg-item-hover)', color: 'var(--text-secondary)' }}
               >
                 +{a}€
               </button>
@@ -483,8 +483,8 @@ function TradePanel({
         {/* ── Section "Pour gagner" — animée (style Polymarket) ── */}
         <div
           style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.07)',
+            background: 'var(--bg-item)',
+            border: '1px solid var(--border)',
             borderRadius: 12,
             padding: '14px 16px',
             opacity:    gainVisible ? 1 : 0,
@@ -494,14 +494,14 @@ function TradePanel({
         >
           {/* Ligne "Pour gagner" */}
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold" style={{ color: '#6b7db3' }}>Pour gagner</span>
+            <span className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Pour gagner</span>
             <span className="font-black" style={{ color: '#00e676', fontSize: 26, lineHeight: 1 }}>
               {potWin.toFixed(2)} €
             </span>
           </div>
 
           {/* Barre de progression probabilité */}
-          <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 99, height: 4, marginBottom: 10 }}>
+          <div style={{ background: 'var(--bg-item-hover)', borderRadius: 99, height: 4, marginBottom: 10 }}>
             <div
               style={{
                 width: `${opt.probability}%`,
@@ -515,7 +515,7 @@ function TradePanel({
 
           {/* Profit net */}
           <div className="flex items-center justify-between text-xs">
-            <span style={{ color: '#4a5380' }}>Profit net</span>
+            <span style={{ color: 'var(--text-muted)' }}>Profit net</span>
             <span className="font-bold" style={{ color: '#00e676' }}>+{profit.toFixed(2)} €</span>
           </div>
         </div>
@@ -544,7 +544,7 @@ function TradePanel({
             Se connecter pour parier
           </Link>
         ) : isClosed ? (
-          <div className="w-full py-4 rounded-xl text-sm font-black flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.05)', color: '#4a5380' }}>
+          <div className="w-full py-4 rounded-xl text-sm font-black flex items-center justify-center" style={{ background: 'var(--bg-item)', color: 'var(--text-muted)' }}>
             Marché fermé
           </div>
         ) : (
@@ -554,11 +554,11 @@ function TradePanel({
             className="w-full py-4 rounded-xl text-base font-black flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
             style={{
               background: submitting
-                ? 'rgba(255,255,255,0.07)'
+                ? 'var(--bg-item-hover)'
                 : betSide === 'yes'
                   ? 'linear-gradient(135deg, #00e676, #00c853)'
                   : 'linear-gradient(135deg, #f44336, #e53935)',
-              color: submitting ? '#4a5380' : '#fff',
+              color: submitting ? 'var(--text-muted)' : '#fff',
               boxShadow: submitting ? 'none' : betSide === 'yes'
                 ? '0 4px 24px rgba(0,230,118,0.35)'
                 : '0 4px 24px rgba(244,67,54,0.35)',
@@ -649,7 +649,7 @@ export default function MarketPage({ params }: PageProps) {
   // ── Loading ──
   if (loading) {
     return (
-      <div className="flex flex-col min-h-screen" style={{ background: '#0f1117' }}>
+      <div className="flex flex-col min-h-screen" style={{ background: 'var(--bg-primary)' }}>
         <Header isLoggedIn={false} coins={0} liveCount={0} />
         <div className="flex-1 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
@@ -657,7 +657,7 @@ export default function MarketPage({ params }: PageProps) {
               className="w-10 h-10 rounded-full border-2 animate-spin"
               style={{ borderColor: '#00e676', borderTopColor: 'transparent' }}
             />
-            <span className="text-sm" style={{ color: '#4a5380' }}>Chargement…</span>
+            <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Chargement…</span>
           </div>
         </div>
       </div>
@@ -667,11 +667,11 @@ export default function MarketPage({ params }: PageProps) {
   // ── Not found ──
   if (!market) {
     return (
-      <div className="flex flex-col min-h-screen" style={{ background: '#0f1117' }}>
+      <div className="flex flex-col min-h-screen" style={{ background: 'var(--bg-primary)' }}>
         <Header isLoggedIn={false} coins={0} liveCount={0} />
         <div className="flex-1 flex items-center justify-center flex-col gap-3">
           <p className="text-4xl">🌐</p>
-          <p className="text-sm" style={{ color: '#4a5380' }}>Marché introuvable</p>
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Marché introuvable</p>
           <Link href="/" className="text-xs font-bold" style={{ color: '#00e676' }}>← Retour</Link>
         </div>
       </div>
@@ -787,7 +787,7 @@ export default function MarketPage({ params }: PageProps) {
   };
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ background: '#0f1117' }}>
+    <div className="flex flex-col min-h-screen" style={{ background: 'var(--bg-primary)' }}>
       <Header isLoggedIn={!!session} coins={0} liveCount={isLive ? 1 : 0} />
 
       {/* ══ BODY ══════════════════════════════════════════════════════════════ */}
@@ -817,14 +817,14 @@ export default function MarketPage({ params }: PageProps) {
             {/* Title block */}
             <div className="flex-1 min-w-0">
               {/* Breadcrumb */}
-              <div className="flex items-center gap-1.5 text-xs mb-2 flex-wrap" style={{ color: '#4a5380' }}>
+              <div className="flex items-center gap-1.5 text-xs mb-2 flex-wrap" style={{ color: 'var(--text-muted)' }}>
                 <Link href="/" className="hover:text-white transition-colors">Marchés</Link>
                 <span>·</span>
                 <Link href={`/category/${market.category}`} className="hover:text-white transition-colors capitalize">{catLabel}</Link>
                 {market.subcategory && (
                   <>
                     <span>·</span>
-                    <span style={{ color: '#6b7db3', textTransform: 'capitalize' }}>{market.subcategory}</span>
+                    <span style={{ color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{market.subcategory}</span>
                   </>
                 )}
                 {isLive && (
@@ -839,11 +839,11 @@ export default function MarketPage({ params }: PageProps) {
               </div>
 
               {/* Title */}
-              <h1 className="text-2xl sm:text-3xl font-black leading-tight" style={{ color: '#fff' }}>
+              <h1 className="text-2xl sm:text-3xl font-black leading-tight" style={{ color: 'var(--text-primary)' }}>
                 {market.title}
               </h1>
               {market.description && (
-                <p className="text-sm mt-1.5 leading-relaxed" style={{ color: '#6b7db3', maxWidth: 600 }}>
+                <p className="text-sm mt-1.5 leading-relaxed" style={{ color: 'var(--text-secondary)', maxWidth: 600 }}>
                   {market.description}
                 </p>
               )}
@@ -854,7 +854,7 @@ export default function MarketPage({ params }: PageProps) {
               <button
                 title="Calendrier"
                 className="p-2.5 rounded-xl transition-all hover:bg-white/8"
-                style={{ color: '#4a5380' }}
+                style={{ color: 'var(--text-muted)' }}
               >
                 <Calendar size={16} />
               </button>
@@ -862,7 +862,7 @@ export default function MarketPage({ params }: PageProps) {
                 title="Commentaires"
                 onClick={handleScrollToComments}
                 className="p-2.5 rounded-xl transition-all hover:bg-white/8"
-                style={{ color: '#4a5380' }}
+                style={{ color: 'var(--text-muted)' }}
               >
                 <MessageCircle size={16} />
               </button>
@@ -870,7 +870,7 @@ export default function MarketPage({ params }: PageProps) {
                 title={copied ? 'Lien copié !' : 'Partager'}
                 onClick={handleShare}
                 className="p-2.5 rounded-xl transition-all hover:bg-white/8 relative"
-                style={{ color: copied ? '#00e676' : '#4a5380' }}
+                style={{ color: copied ? '#00e676' : 'var(--text-muted)' }}
               >
                 <Share2 size={16} />
                 {copied && (
@@ -886,7 +886,7 @@ export default function MarketPage({ params }: PageProps) {
                 title="Télécharger CSV"
                 onClick={handleDownloadCSV}
                 className="p-2.5 rounded-xl transition-all hover:bg-white/8"
-                style={{ color: '#4a5380' }}
+                style={{ color: 'var(--text-muted)' }}
               >
                 <Download size={16} />
               </button>
@@ -896,7 +896,7 @@ export default function MarketPage({ params }: PageProps) {
           {/* ── Chart ──────────────────────────────────────────────────────── */}
           <div
             className="rounded-2xl mb-1 overflow-hidden"
-            style={{ background: '#0d1018', border: '1px solid rgba(255,255,255,0.07)', padding: '20px 8px 8px 8px' }}
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '20px 8px 8px 8px' }}
           >
             <KalshiChart series={chartSeries} loading={chartLoading} />
           </div>
@@ -904,11 +904,11 @@ export default function MarketPage({ params }: PageProps) {
           {/* ── Volume + Periods ────────────────────────────────────────────── */}
           <div
             className="flex items-center justify-between px-2 py-3 mb-5"
-            style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+            style={{ borderBottom: '1px solid var(--border-light)' }}
           >
-            <span className="text-sm flex items-center gap-1.5" style={{ color: '#6b7db3' }}>
+            <span className="text-sm flex items-center gap-1.5" style={{ color: 'var(--text-secondary)' }}>
               <TrendingUp size={13} />
-              <span className="font-bold" style={{ color: '#fff' }}>{formatCoins(market.totalVolume)}</span>
+              <span className="font-bold" style={{ color: 'var(--text-primary)' }}>{formatCoins(market.totalVolume)}</span>
               <span>€ vol.</span>
             </span>
             <div className="flex items-center gap-0.5">
@@ -918,8 +918,8 @@ export default function MarketPage({ params }: PageProps) {
                   onClick={() => setPeriod(p)}
                   className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
                   style={{
-                    background: period === p ? 'rgba(255,255,255,0.1)' : 'transparent',
-                    color:      period === p ? '#fff' : '#4a5380',
+                    background: period === p ? 'var(--bg-item-hover)' : 'transparent',
+                    color:      period === p ? 'var(--text-primary)' : 'var(--text-muted)',
                   }}
                 >
                   {p}
@@ -928,7 +928,7 @@ export default function MarketPage({ params }: PageProps) {
               {/* Options icon like Kalshi */}
               <button
                 className="ml-1 p-1.5 rounded-lg transition-all hover:bg-white/5"
-                style={{ color: '#4a5380' }}
+                style={{ color: 'var(--text-muted)' }}
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <path d="M2 4h10M4 7h6M6 10h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -943,14 +943,14 @@ export default function MarketPage({ params }: PageProps) {
             <div
               className="flex items-center justify-between px-2 py-2 mb-1"
             >
-              <span className="text-sm font-semibold" style={{ color: '#6b7db3' }}>Chance</span>
+              <span className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>Chance</span>
               <div className="flex items-center gap-1.5">
-                <button className="p-1.5 rounded-lg hover:bg-white/5 transition-all" style={{ color: '#4a5380' }}>
+                <button className="p-1.5 rounded-lg hover:bg-white/5 transition-all" style={{ color: 'var(--text-muted)' }}>
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <path d="M2 4h10M4 7h6M6 10h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                   </svg>
                 </button>
-                <button className="p-1.5 rounded-lg hover:bg-white/5 transition-all" style={{ color: '#4a5380' }}>
+                <button className="p-1.5 rounded-lg hover:bg-white/5 transition-all" style={{ color: 'var(--text-muted)' }}>
                   <Search size={13} />
                 </button>
               </div>
@@ -966,7 +966,7 @@ export default function MarketPage({ params }: PageProps) {
                   key={String(opt._id)}
                   className="flex items-center gap-3 px-3 py-3.5 transition-all hover:bg-white/[0.025] cursor-pointer"
                   style={{
-                    borderBottom: '1px solid rgba(255,255,255,0.06)',
+                    borderBottom: '1px solid var(--border-light)',
                   }}
                 >
                   {/* Option icon */}
@@ -981,13 +981,13 @@ export default function MarketPage({ params }: PageProps) {
                   </div>
 
                   {/* Name */}
-                  <span className="flex-1 text-sm font-semibold" style={{ color: '#e8eaf6' }}>
+                  <span className="flex-1 text-sm font-semibold" style={{ color: 'var(--text-label)' }}>
                     {opt.label}
                   </span>
 
                   {/* % + trend */}
                   <div className="flex items-center gap-1.5 shrink-0" style={{ minWidth: 80 }}>
-                    <span className="text-base font-black" style={{ color: '#fff' }}>
+                    <span className="text-base font-black" style={{ color: 'var(--text-primary)' }}>
                       {opt.probability}%
                     </span>
                     <span
@@ -1028,9 +1028,9 @@ export default function MarketPage({ params }: PageProps) {
                     }}
                     className="rounded-full font-black text-sm transition-all hover:brightness-115 active:scale-95"
                     style={{
-                      background: selectedIdx === idx && betSide === 'no' ? 'rgba(244,67,54,0.15)' : 'rgba(255,255,255,0.04)',
-                      border:     `1.5px solid ${selectedIdx === idx && betSide === 'no' ? '#f44336' : 'rgba(255,255,255,0.2)'}`,
-                      color:      selectedIdx === idx && betSide === 'no' ? '#f44336' : '#c0c8e8',
+                      background: selectedIdx === idx && betSide === 'no' ? 'rgba(244,67,54,0.15)' : 'var(--bg-item)',
+                      border:     `1.5px solid ${selectedIdx === idx && betSide === 'no' ? '#f44336' : 'var(--border)'}`,
+                      color:      selectedIdx === idx && betSide === 'no' ? '#f44336' : 'var(--text-bright)',
                       padding:    '6px 22px',
                       minWidth:   100,
                     }}
@@ -1044,7 +1044,7 @@ export default function MarketPage({ params }: PageProps) {
             <Link
               href={`/category/${market.category}`}
               className="flex items-center gap-1 text-sm px-3 py-3 hover:text-white transition-colors"
-              style={{ color: '#4a5380' }}
+              style={{ color: 'var(--text-muted)' }}
             >
               More markets
             </Link>
@@ -1053,31 +1053,31 @@ export default function MarketPage({ params }: PageProps) {
           {/* ── Accordions ─────────────────────────────────────────────────── */}
           <div
             className="rounded-2xl px-5 mb-5"
-            style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)' }}
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
           >
             <Accordion title="Règles du marché" icon={<Info size={13} />} defaultOpen>
               {market.rules && (
-                <p className="text-sm leading-relaxed mb-3" style={{ color: '#8d97b8' }}>{market.rules}</p>
+                <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--text-secondary)' }}>{market.rules}</p>
               )}
               {market.contextNews && (
-                <p className="text-sm leading-relaxed mb-3" style={{ color: '#8d97b8' }}>
-                  <span className="font-semibold" style={{ color: '#6b7db3' }}>Contexte · </span>
+                <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--text-secondary)' }}>
+                  <span className="font-semibold" style={{ color: 'var(--text-secondary)' }}>Contexte · </span>
                   {market.contextNews}
                 </p>
               )}
               {!market.rules && !market.contextNews && (
-                <p className="text-sm leading-relaxed mb-3" style={{ color: '#8d97b8' }}>
+                <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--text-secondary)' }}>
                   {`Si "${market.options[0]?.label}" est l'issue correcte, ce marché se résout en Oui. Les sources officielles feront foi.`}
                 </p>
               )}
-              <p className="text-sm leading-relaxed mb-3" style={{ color: '#8d97b8' }}>
+              <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--text-secondary)' }}>
                 Si aucune issue n&apos;est déterminée avant la date d&apos;expiration, tous les marchés se résolvent en Non.
               </p>
               <div className="flex gap-2">
-                <button className="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-white/5 transition-all" style={{ border: '1px solid rgba(255,255,255,0.12)', color: '#8d97b8' }}>
+                <button className="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-white/5 transition-all" style={{ border: '1px solid var(--border-medium)', color: 'var(--text-secondary)' }}>
                   Règles complètes
                 </button>
-                <button className="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-white/5 transition-all" style={{ border: '1px solid rgba(255,255,255,0.12)', color: '#8d97b8' }}>
+                <button className="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-white/5 transition-all" style={{ border: '1px solid var(--border-medium)', color: 'var(--text-secondary)' }}>
                   Centre d&apos;aide
                 </button>
               </div>
@@ -1092,15 +1092,15 @@ export default function MarketPage({ params }: PageProps) {
                   ['Statut', market.status === 'live' ? '🔴 En direct' : market.status === 'open' ? '🟢 Ouvert' : '⚫ Fermé'],
                 ] as [string, string][]).map(([k, v]) => (
                   <div key={k} className="flex justify-between items-center text-sm">
-                    <span style={{ color: '#4a5380' }}>{k}</span>
-                    <span style={{ color: '#e0e6ff' }}>{v}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>{k}</span>
+                    <span style={{ color: 'var(--text-bright)' }}>{v}</span>
                   </div>
                 ))}
               </div>
             </Accordion>
 
             <Accordion title="Restrictions de trading" icon={<span style={{ fontSize: 13 }}>🚫</span>}>
-              <p className="text-sm leading-relaxed" style={{ color: '#8d97b8' }}>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                 Ce marché est réservé aux utilisateurs vérifiés. Paris exclusivement en coins FlatEarth.
               </p>
             </Accordion>
@@ -1110,14 +1110,14 @@ export default function MarketPage({ params }: PageProps) {
           <div
             ref={commentsRef}
             className="rounded-2xl p-5 mb-6"
-            style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)' }}
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
           >
             {/* Header */}
-            <h3 className="text-sm font-bold mb-4 flex items-center gap-2" style={{ color: '#e0e6ff' }}>
-              <MessageCircle size={14} style={{ color: '#4a5380' }} />
+            <h3 className="text-sm font-bold mb-4 flex items-center gap-2" style={{ color: 'var(--text-bright)' }}>
+              <MessageCircle size={14} style={{ color: 'var(--text-muted)' }} />
               Avis de la communauté
               {!commLoading && (
-                <span className="px-1.5 py-0.5 rounded-full text-xs font-black" style={{ background: 'rgba(255,255,255,0.08)', color: '#8d97b8' }}>
+                <span className="px-1.5 py-0.5 rounded-full text-xs font-black" style={{ background: 'var(--bg-item-hover)', color: 'var(--text-secondary)' }}>
                   {comments.length}
                 </span>
               )}
@@ -1125,14 +1125,14 @@ export default function MarketPage({ params }: PageProps) {
 
             {/* Champ nouveau commentaire */}
             {session ? (
-              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl mb-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl mb-4" style={{ background: 'var(--bg-item)', border: '1px solid var(--border-medium)' }}>
                 <input
                   type="text" value={comment}
                   onChange={e => setComment(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && handleComment()}
                   placeholder="Écrire un commentaire…"
                   className="flex-1 bg-transparent outline-none text-sm"
-                  style={{ color: '#fff' }}
+                  style={{ color: 'var(--text-primary)' }}
                 />
                 <button
                   onClick={handleComment}
@@ -1147,7 +1147,7 @@ export default function MarketPage({ params }: PageProps) {
               <Link
                 href="/auth/login"
                 className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl mb-4 text-sm transition-all hover:bg-white/5"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: '#6b7db3' }}
+                style={{ background: 'var(--bg-item)', border: '1px solid var(--border-medium)', color: 'var(--text-secondary)' }}
               >
                 <MessageCircle size={14} />
                 Connecte-toi pour commenter
@@ -1166,7 +1166,7 @@ export default function MarketPage({ params }: PageProps) {
                 <div className="w-5 h-5 rounded-full border-2 animate-spin" style={{ borderColor: '#00e676', borderTopColor: 'transparent' }} />
               </div>
             ) : comments.length === 0 ? (
-              <p className="text-sm text-center py-6" style={{ color: '#4a5380' }}>
+              <p className="text-sm text-center py-6" style={{ color: 'var(--text-muted)' }}>
                 Aucun commentaire pour l&apos;instant. Sois le premier !
               </p>
             ) : (
@@ -1176,7 +1176,7 @@ export default function MarketPage({ params }: PageProps) {
                   const isLiked  = likedIds.has(c._id);
                   const isReplying = replyingTo === c._id;
                   return (
-                    <div key={c._id} style={{ borderBottom: i < comments.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+                    <div key={c._id} style={{ borderBottom: i < comments.length - 1 ? '1px solid var(--border-light)' : 'none' }}>
                       {/* Commentaire principal */}
                       <div className="flex gap-3 py-3">
                         <div
@@ -1187,15 +1187,15 @@ export default function MarketPage({ params }: PageProps) {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs font-bold" style={{ color: '#e0e6ff' }}>{username}</span>
-                            <span className="text-xs" style={{ color: '#4a5380' }}>{relativeTime(c.createdAt)}</span>
+                            <span className="text-xs font-bold" style={{ color: 'var(--text-bright)' }}>{username}</span>
+                            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{relativeTime(c.createdAt)}</span>
                           </div>
-                          <p className="text-sm leading-snug" style={{ color: '#8d97b8' }}>{c.content}</p>
+                          <p className="text-sm leading-snug" style={{ color: 'var(--text-secondary)' }}>{c.content}</p>
                           {session && (
                             <button
                               onClick={() => { setReplyingTo(isReplying ? null : c._id); setReplyText(''); }}
                               className="mt-2 text-xs font-semibold flex items-center gap-1 transition-colors hover:text-white"
-                              style={{ color: '#4a5380' }}
+                              style={{ color: 'var(--text-muted)' }}
                             >
                               <CornerDownRight size={11} />
                               Répondre
@@ -1205,7 +1205,7 @@ export default function MarketPage({ params }: PageProps) {
                         <button
                           onClick={() => handleLike(c._id)}
                           className="flex items-center gap-1 text-xs shrink-0 self-start pt-1 transition-colors hover:text-red-400"
-                          style={{ color: isLiked ? '#f44336' : '#4a5380' }}
+                          style={{ color: isLiked ? '#f44336' : 'var(--text-muted)' }}
                         >
                           <Heart size={11} fill={isLiked ? 'currentColor' : 'none'} />
                           {c.likes}
@@ -1214,7 +1214,7 @@ export default function MarketPage({ params }: PageProps) {
 
                       {/* Champ réponse inline */}
                       {isReplying && (
-                        <div className="ml-11 mb-3 flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <div className="ml-11 mb-3 flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: 'var(--bg-item)', border: '1px solid var(--border-medium)' }}>
                           <input
                             type="text"
                             value={replyText}
@@ -1223,7 +1223,7 @@ export default function MarketPage({ params }: PageProps) {
                             placeholder={`Répondre à ${username}…`}
                             autoFocus
                             className="flex-1 bg-transparent outline-none text-xs"
-                            style={{ color: '#fff' }}
+                            style={{ color: 'var(--text-primary)' }}
                           />
                           <button
                             onClick={() => handleReply(c._id)}
@@ -1243,24 +1243,24 @@ export default function MarketPage({ params }: PageProps) {
                             const rUsername = r.userId?.username ?? 'Utilisateur';
                             const rLiked = likedIds.has(r._id);
                             return (
-                              <div key={r._id} className="flex gap-2.5 py-2.5" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+                              <div key={r._id} className="flex gap-2.5 py-2.5" style={{ borderTop: '1px solid var(--border-light)' }}>
                                 <div
                                   className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5"
-                                  style={{ background: 'linear-gradient(135deg, #7c3aed, #4fc3f7)', color: '#fff', fontSize: 9 }}
+                                  style={{ background: 'linear-gradient(135deg, #7c3aed, #4fc3f7)', color: 'var(--text-primary)', fontSize: 9 }}
                                 >
                                   {rUsername[0].toUpperCase()}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center gap-2 mb-0.5">
-                                    <span className="text-xs font-bold" style={{ color: '#c0c8e8' }}>{rUsername}</span>
-                                    <span className="text-xs" style={{ color: '#4a5380' }}>{relativeTime(r.createdAt)}</span>
+                                    <span className="text-xs font-bold" style={{ color: 'var(--text-bright)' }}>{rUsername}</span>
+                                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{relativeTime(r.createdAt)}</span>
                                   </div>
-                                  <p className="text-xs leading-snug" style={{ color: '#6b7db3' }}>{r.content}</p>
+                                  <p className="text-xs leading-snug" style={{ color: 'var(--text-secondary)' }}>{r.content}</p>
                                 </div>
                                 <button
                                   onClick={() => handleLike(r._id, true, c._id)}
                                   className="flex items-center gap-1 text-xs shrink-0 self-start pt-0.5 transition-colors hover:text-red-400"
-                                  style={{ color: rLiked ? '#f44336' : '#4a5380' }}
+                                  style={{ color: rLiked ? '#f44336' : 'var(--text-muted)' }}
                                 >
                                   <Heart size={10} fill={rLiked ? 'currentColor' : 'none'} />
                                   {r.likes}
@@ -1339,17 +1339,17 @@ function MobileTradeBar({
       <div
         className="lg:hidden sticky bottom-0 z-40 px-4 py-3 flex items-center gap-3"
         style={{
-          background: 'rgba(9,11,17,0.97)',
+          background: 'var(--header-bg)',
           backdropFilter: 'blur(16px)',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
+          borderTop: '1px solid var(--border-medium)',
         }}
       >
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold truncate" style={{ color: '#6b7db3' }}>{market.title}</p>
+          <p className="text-xs font-semibold truncate" style={{ color: 'var(--text-secondary)' }}>{market.title}</p>
           <div className="flex items-center gap-2 mt-0.5">
             <span className="text-xs font-black truncate max-w-[100px]" style={{ color: '#00e676' }}>{market.options[0]?.label} {opt0?.probability}¢</span>
-            <span className="text-xs shrink-0" style={{ color: '#4a5380' }}>·</span>
-            <span className="text-xs font-black truncate max-w-[100px]" style={{ color: '#c0c8e8' }}>{market.options[1]?.label ?? 'Non'} {100 - (opt0?.probability ?? 50)}¢</span>
+            <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>·</span>
+            <span className="text-xs font-black truncate max-w-[100px]" style={{ color: 'var(--text-bright)' }}>{market.options[1]?.label ?? 'Non'} {100 - (opt0?.probability ?? 50)}¢</span>
           </div>
         </div>
         <button
@@ -1365,15 +1365,15 @@ function MobileTradeBar({
       {open && (
         <div
           className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end"
-          style={{ background: 'rgba(0,0,0,0.7)' }}
+          style={{ background: 'var(--shadow-overlay)' }}
           onClick={e => { if (e.target === e.currentTarget) setOpen(false); }}
         >
           <div
             className="rounded-t-3xl overflow-y-auto"
-            style={{ background: '#0f1117', border: '1px solid rgba(255,255,255,0.1)', maxHeight: '90vh' }}
+            style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-medium)', maxHeight: '90vh' }}
           >
             <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.15)' }} />
+              <div className="w-10 h-1 rounded-full" style={{ background: 'var(--border-medium)' }} />
             </div>
             <div className="px-4 pb-8">
               <TradePanel

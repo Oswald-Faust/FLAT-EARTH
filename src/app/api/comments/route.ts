@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Comment from '@/models/Comment';
+import '@/models/User'; // requis pour .populate('userId') en environnement serverless
 import { auth } from '@/lib/auth';
 
 // ─── GET /api/comments?marketId=xxx ───────────────────────────────────────────

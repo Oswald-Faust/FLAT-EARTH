@@ -53,7 +53,7 @@ export default function CategoryPage({ params }: PageProps) {
   const gridMarkets    = filteredMarkets.slice(1);
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ background: '#0f1117' }}>
+    <div className="flex flex-col min-h-screen" style={{ background: 'var(--bg-primary)' }}>
       <Header isLoggedIn={false} coins={0} liveCount={liveCount} />
 
       <div className="flex flex-1 overflow-hidden">
@@ -63,8 +63,8 @@ export default function CategoryPage({ params }: PageProps) {
           className="hidden md:flex flex-col shrink-0 overflow-y-auto py-4"
           style={{
             width: 200,
-            background: 'rgba(9,11,17,0.97)',
-            borderRight: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--bg-deep)',
+            borderRight: '1px solid var(--border-light)',
           }}
         >
           {subWithCounts.map((sub) => {
@@ -75,16 +75,16 @@ export default function CategoryPage({ params }: PageProps) {
                 onClick={() => setActiveSub(sub.key)}
                 className="flex items-center justify-between px-4 py-2 text-sm text-left transition-all hover:bg-white/5"
                 style={{
-                  background: active ? 'rgba(255,255,255,0.07)' : 'transparent',
-                  color: active ? '#fff' : '#6b7db3',
+                  background: active ? 'var(--bg-item-hover)' : 'transparent',
+                  color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
                   fontWeight: active ? 600 : 400,
-                  borderRight: active ? '2px solid #00e676' : '2px solid transparent',
+                  borderRight: active ? `2px solid var(--accent-green)` : '2px solid transparent',
                 }}
               >
                 <span className="truncate">{sub.label}</span>
                 <span
                   className="text-xs ml-2 shrink-0 tabular-nums"
-                  style={{ color: active ? '#8892c4' : '#4a5380' }}
+                  style={{ color: active ? 'var(--text-secondary)' : 'var(--text-muted)' }}
                 >
                   {sub.count > 0 ? sub.count.toLocaleString() : ''}
                 </span>
@@ -99,7 +99,7 @@ export default function CategoryPage({ params }: PageProps) {
 
             {/* Page header */}
             <div className="flex items-center justify-between mb-5">
-              <h1 className="text-xl font-black flex items-center gap-2" style={{ color: '#fff' }}>
+              <h1 className="text-xl font-black flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
                 <span>{icon}</span>
                 {label}
                 {liveCount > 0 && (
@@ -111,28 +111,28 @@ export default function CategoryPage({ params }: PageProps) {
               <div className="flex items-center gap-2">
                 <div
                   className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
-                  style={{ background: 'rgba(22,26,38,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  style={{ background: 'var(--bg-input)', border: '1px solid var(--border-medium)' }}
                 >
-                  <Search size={13} style={{ color: '#4a5380' }} />
+                  <Search size={13} style={{ color: 'var(--text-muted)' }} />
                   <input
                     type="text"
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     placeholder="Rechercher..."
                     className="bg-transparent outline-none text-xs w-32"
-                    style={{ color: '#fff' }}
+                    style={{ color: 'var(--text-primary)' }}
                   />
                 </div>
                 <button
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:brightness-125"
-                  style={{ background: 'rgba(22,26,38,0.7)', border: '1px solid rgba(255,255,255,0.08)', color: '#8892c4' }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:brightness-110"
+                  style={{ background: 'var(--bg-input)', border: '1px solid var(--border-medium)', color: 'var(--text-secondary)' }}
                 >
                   <SlidersHorizontal size={12} />
                   Filtres
                 </button>
                 <button
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:brightness-125"
-                  style={{ background: 'rgba(22,26,38,0.7)', border: '1px solid rgba(255,255,255,0.08)', color: '#8892c4' }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:brightness-110"
+                  style={{ background: 'var(--bg-input)', border: '1px solid var(--border-medium)', color: 'var(--text-secondary)' }}
                 >
                   <Bookmark size={12} />
                 </button>
@@ -146,7 +146,7 @@ export default function CategoryPage({ params }: PageProps) {
                   <div
                     key={i}
                     className="rounded-2xl animate-pulse"
-                    style={{ height: 180, background: 'rgba(22,27,38,0.8)', border: '1px solid rgba(255,255,255,0.05)' }}
+                    style={{ height: 180, background: 'var(--bg-card)', border: '1px solid var(--border-light)' }}
                   />
                 ))}
               </div>
@@ -154,10 +154,10 @@ export default function CategoryPage({ params }: PageProps) {
 
             {/* Empty */}
             {!loading && filteredMarkets.length === 0 && (
-              <div className="text-center py-24" style={{ color: '#4a5380' }}>
+              <div className="text-center py-24" style={{ color: 'var(--text-muted)' }}>
                 <p className="text-5xl mb-4">{icon}</p>
                 <p className="text-sm">Aucun pari disponible dans cette catégorie pour le moment</p>
-                <Link href="/" className="mt-4 inline-flex items-center gap-1 text-xs" style={{ color: '#00e676' }}>
+                <Link href="/" className="mt-4 inline-flex items-center gap-1 text-xs" style={{ color: 'var(--accent-green)' }}>
                   <ChevronLeft size={12} /> Retour à l&apos;accueil
                 </Link>
               </div>

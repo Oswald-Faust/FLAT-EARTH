@@ -1,24 +1,68 @@
 @import "tailwindcss";
 
 :root {
+  /* ── Fonds ── */
   --bg-primary: #0f1117;
   --bg-secondary: #161b26;
   --bg-card: #161b26;
   --bg-card-hover: #1e2535;
+  --bg-elevated: #13161f;
+  --bg-deep: #090b11;
+  --bg-item: rgba(255,255,255,0.03);
+  --bg-item-hover: rgba(255,255,255,0.06);
+  --bg-input: rgba(255,255,255,0.06);
+  /* ── Bordures ── */
   --border: rgba(255,255,255,0.09);
   --border-light: rgba(255,255,255,0.05);
+  --border-medium: rgba(255,255,255,0.1);
+  /* ── Textes ── */
+  --text-primary: #ffffff;
+  --text-bright: #e0e6ff;
+  --text-label: #cbd5f0;
+  --text-secondary: #8d97b8;
+  --text-muted: #4e5878;
+  --text-dim: #2a3050;
+  /* ── Accents ── */
   --accent-green: #00e676;
   --accent-gold: #ffd700;
   --accent-blue: #4fc3f7;
-  --text-primary: #ffffff;
-  --text-secondary: #8d97b8;
-  --text-muted: #4e5878;
+  /* ── Paris ── */
   --yes-color: #00e676;
   --no-color: #f44336;
   --yes-bg: rgba(0, 230, 118, 0.12);
   --no-bg: rgba(244, 67, 54, 0.12);
+  /* ── Misc ── */
+  --shadow-overlay: rgba(0,0,0,0.75);
+  --header-bg: rgba(9,11,17,0.98);
   --header-height: 56px;
   --subnav-height: 40px;
+}
+
+/* ── Light Mode ──────────────────────────────────────────────────────────── */
+html.light {
+  --bg-primary: #f4f6fa;
+  --bg-secondary: #eef0f6;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f5f7fc;
+  --bg-elevated: #ffffff;
+  --bg-deep: #e4e8f0;
+  --bg-item: rgba(0,0,0,0.03);
+  --bg-item-hover: rgba(0,0,0,0.06);
+  --bg-input: rgba(0,0,0,0.05);
+  --border: rgba(0,0,0,0.1);
+  --border-light: rgba(0,0,0,0.06);
+  --border-medium: rgba(0,0,0,0.13);
+  --text-primary: #0d1117;
+  --text-bright: #1a1f35;
+  --text-label: #3d4a6a;
+  --text-secondary: #4a5568;
+  --text-muted: #7a8499;
+  --text-dim: #b0b8cc;
+  --accent-green: #00a550;
+  --yes-color: #00a550;
+  --yes-bg: rgba(0,165,80,0.1);
+  --shadow-overlay: rgba(0,0,0,0.5);
+  --header-bg: rgba(244,246,250,0.98);
 }
 
 @theme inline {

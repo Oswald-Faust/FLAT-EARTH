@@ -7,6 +7,7 @@ import { Search, User, Menu, LogOut, Wallet, Settings, ChevronDown, ArrowUpRight
 import { useSession, signOut } from 'next-auth/react';
 import { CATEGORY_LABELS, MarketCategory, type IMarket } from '@/types';
 import DepositModal from '@/components/wallet/DepositModal';
+import ThemeToggle from '@/components/layout/ThemeToggle';
 
 interface HeaderProps {
   coins?: number;
@@ -223,10 +224,10 @@ export default function Header({
     <header
       className="sticky top-0 z-50 flex flex-col w-full"
       style={{
-        background: 'rgba(9,11,17,0.98)',
+        background: 'var(--header-bg)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        borderBottom: '1px solid var(--border-medium)',
       }}
     >
       {/* ════════════════════════════════════════════════════
@@ -277,17 +278,16 @@ export default function Header({
             className="relative"
           >
             <div
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl w-full transition-all border ${
-                searchOpen 
-                  ? 'bg-zinc-800 border-zinc-600 shadow-[0_0_0_2px_rgba(255,255,255,0.05)]' 
-                  : 'bg-zinc-900/50 border-zinc-800 hover:border-zinc-700'
-              }`}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl w-full transition-all"
               style={{
                 maxWidth: 680,
                 margin: '0 auto',
+                border: `1px solid ${searchOpen ? 'var(--border-medium)' : 'var(--border)'}`,
+                background: searchOpen ? 'var(--bg-elevated)' : 'var(--bg-input)',
+                boxShadow: searchOpen ? '0 0 0 2px var(--border-light)' : 'none',
               }}
             >
-              <Search size={14} className={`shrink-0 transition-colors ${searchOpen ? 'text-zinc-300' : 'text-zinc-500'}`} />
+              <Search size={14} className="shrink-0 transition-colors" style={{ color: searchOpen ? 'var(--text-secondary)' : 'var(--text-muted)' }} />
               <input
                 ref={inputRef}
                 type="text"
@@ -304,10 +304,12 @@ export default function Header({
                   }
                 }}
                 placeholder="Rechercher marchés, sujets..."
-                className="flex-1 min-w-0 bg-transparent outline-none text-[13px] text-zinc-100 placeholder-zinc-500"
+                className="flex-1 min-w-0 bg-transparent outline-none text-[13px]"
+                style={{ color: 'var(--text-primary)' }}
               />
               <kbd
-                className="hidden sm:flex items-center justify-center px-1.5 py-0.5 rounded-md shrink-0 border border-zinc-700 bg-zinc-800 text-zinc-400 text-[10px] font-medium"
+                className="hidden sm:flex items-center justify-center px-1.5 py-0.5 rounded-md shrink-0 text-[10px] font-medium"
+                style={{ border: '1px solid var(--border)', background: 'var(--bg-item-hover)', color: 'var(--text-muted)' }}
               >
                 /
               </kbd>
@@ -315,18 +317,20 @@ export default function Header({
 
             {searchOpen && (
               <div
-                className="absolute top-full mt-2 rounded-xl overflow-hidden z-[80] shadow-2xl shadow-black/80 border border-zinc-700/60"
+                className="absolute top-full mt-2 rounded-xl overflow-hidden z-[80] shadow-2xl"
                 style={{
                   width: 'calc(100vw - 32px)',
                   maxWidth: 720,
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  background: '#181a20',
+                  background: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-medium)',
+                  boxShadow: '0 20px 60px var(--shadow-overlay)',
                 }}
               >
                 {search.trim().length < 2 ? (
                   <div className="p-4 sm:p-5">
-                    <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                       Parcourir
                     </p>
                     <div className="flex flex-wrap gap-2 mb-6">
@@ -334,7 +338,8 @@ export default function Header({
                         <Link
                           key={key}
                           href={getHref(key)}
-                          className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors bg-zinc-800/50 text-zinc-300 hover:text-white hover:bg-zinc-700 border border-zinc-700/50"
+                          className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hover:brightness-110"
+                          style={{ background: 'var(--bg-item-hover)', color: 'var(--text-label)', border: '1px solid var(--border)' }}
                         >
                           {label}
                         </Link>
@@ -343,7 +348,7 @@ export default function Header({
 
                     <div className="grid gap-6 md:grid-cols-[1.5fr_1fr]">
                       <div>
-                        <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+                        <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                           Marchés en vue
                         </p>
                         <div className="space-y-1">
@@ -356,7 +361,7 @@ export default function Header({
                       <div className="hidden md:block">
                         <div className="flex items-center gap-2 mb-3">
                           <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                          <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                          <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                             En direct
                           </p>
                         </div>
@@ -364,7 +369,7 @@ export default function Header({
                           {liveResults.length > 0 ? liveResults.map((market) => (
                             <SearchMarketRow key={market._id} market={market} compact onSelect={() => setSearchOpen(false)} />
                           )) : (
-                            <div className="rounded-lg px-4 py-3 text-sm bg-zinc-800/30 text-zinc-500 border border-zinc-800/50 text-center">
+                            <div className="rounded-lg px-4 py-3 text-sm text-center" style={{ background: 'var(--bg-item)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}>
                               Aucun marché live mis en avant.
                             </div>
                           )}
@@ -372,12 +377,12 @@ export default function Header({
                       </div>
                     </div>
 
-                    <div className="xl:hidden mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div className="xl:hidden mt-4 pt-4" style={{ borderTop: '1px solid var(--border-light)' }}>
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: '#4a5380' }}>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: 'var(--text-muted)' }}>
                           En direct
                         </p>
-                        <span className="text-[11px]" style={{ color: '#6b7db3' }}>
+                        <span className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
                           Sélection rapide
                         </span>
                       </div>
@@ -387,7 +392,7 @@ export default function Header({
                         )) : (
                           <div
                             className="rounded-xl px-3 py-3 text-sm"
-                            style={{ background: 'rgba(255,255,255,0.03)', color: '#6b7db3' }}
+                            style={{ background: 'var(--bg-item)', color: 'var(--text-secondary)' }}
                           >
                             Aucun marché live mis en avant.
                           </div>
@@ -398,11 +403,11 @@ export default function Header({
                 ) : (
                   <div className="p-2">
                     <div className="flex items-center justify-between px-2 py-2">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: '#4a5380' }}>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: 'var(--text-muted)' }}>
                         Résultats
                       </p>
                       {searchLoading && (
-                        <span className="text-xs" style={{ color: '#6b7db3' }}>
+                        <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
                           Recherche...
                         </span>
                       )}
@@ -410,10 +415,10 @@ export default function Header({
 
                     {!searchLoading && visibleResults.length === 0 && (
                       <div className="px-3 py-8 text-center">
-                        <p className="text-sm font-semibold mb-1" style={{ color: '#e0e6ff' }}>
-                          Aucun marché trouvé pour “{search.trim()}”
+                        <p className="text-sm font-semibold mb-1" style={{ color: 'var(--text-bright)' }}>
+                          Aucun marché trouvé pour "{search.trim()}"
                         </p>
-                        <p className="text-xs" style={{ color: '#6b7db3' }}>
+                        <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
                           Essaie un titre, une équipe, un sujet ou une catégorie.
                         </p>
                       </div>
@@ -430,7 +435,7 @@ export default function Header({
                     {visibleResults.length > 0 && (
                       <div
                         className="flex items-center justify-between px-3 py-2 mt-2 rounded-xl"
-                        style={{ background: 'rgba(255,255,255,0.03)', color: '#6b7db3' }}
+                        style={{ background: 'var(--bg-item)', color: 'var(--text-secondary)' }}
                       >
                         <span className="text-xs">Entrée ouvre le premier marché</span>
                         <span className="text-xs">{visibleResults.length} résultat{visibleResults.length > 1 ? 's' : ''}</span>
@@ -478,7 +483,7 @@ export default function Header({
                 <button
                   onClick={() => setMenuOpen(o => !o)}
                   className="flex items-center gap-1.5 pl-1 pr-2 py-1 rounded-xl transition-all hover:bg-white/5"
-                  style={{ border: '1px solid rgba(255,255,255,0.1)' }}
+                  style={{ border: '1px solid var(--border-medium)' }}
                 >
                   {/* Avatar gradient */}
                   <div
@@ -487,8 +492,8 @@ export default function Header({
                   >
                     {username ? username[0].toUpperCase() : <User size={12} />}
                   </div>
-                  <span className="hidden sm:block text-xs font-semibold" style={{ color: '#e0e6ff' }}>{username}</span>
-                  <ChevronDown size={12} style={{ color: '#4a5380' }} />
+                  <span className="hidden sm:block text-xs font-semibold" style={{ color: 'var(--text-bright)' }}>{username}</span>
+                  <ChevronDown size={12} style={{ color: 'var(--text-muted)' }} />
                 </button>
 
                 {/* Dropdown menu */}
@@ -497,13 +502,13 @@ export default function Header({
                     className="absolute right-0 mt-2 rounded-2xl overflow-hidden z-50"
                     style={{
                       width: 220,
-                      background: '#131720',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+                      background: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-medium)',
+                      boxShadow: '0 8px 32px var(--shadow-overlay)',
                     }}
                   >
                     {/* User info */}
-                    <div className="flex items-center gap-3 px-4 py-3.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+                    <div className="flex items-center gap-3 px-4 py-3.5" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div
                         className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black shrink-0"
                         style={{ background: 'linear-gradient(135deg, #00e676, #4fc3f7)', color: '#000' }}
@@ -511,8 +516,8 @@ export default function Header({
                         {username ? username[0].toUpperCase() : '?'}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold truncate" style={{ color: '#fff' }}>{username}</p>
-                        <p className="text-xs font-semibold" style={{ color: '#00e676' }}>
+                        <p className="text-sm font-bold truncate" style={{ color: 'var(--text-primary)' }}>{username}</p>
+                        <p className="text-xs font-semibold" style={{ color: 'var(--accent-green)' }}>
                           {(walletBalance / 100).toFixed(2)} € disponible
                         </p>
                       </div>
@@ -522,7 +527,7 @@ export default function Header({
                     <button
                       onClick={() => { setMenuOpen(false); setDepositOpen(true); }}
                       className="flex items-center gap-3 px-4 py-3 text-sm w-full text-left transition-all hover:bg-white/5"
-                      style={{ color: '#00e676', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+                      style={{ color: 'var(--accent-green)', borderBottom: '1px solid var(--border)' }}
                     >
                       <Wallet size={14} />
                       Déposer des fonds
@@ -539,14 +544,14 @@ export default function Header({
                         href={item.href}
                         onClick={() => setMenuOpen(false)}
                         className="flex items-center gap-3 px-4 py-3 text-sm transition-all hover:bg-white/5"
-                        style={{ color: '#c0c8e8' }}
+                        style={{ color: 'var(--text-bright)' }}
                       >
-                        <span style={{ color: '#4a5380' }}>{item.icon}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>{item.icon}</span>
                         {item.label}
                       </Link>
                     ))}
 
-                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+                    <div style={{ borderTop: '1px solid var(--border)' }}>
                       <button
                         onClick={() => { setMenuOpen(false); signOut({ callbackUrl: '/' }); }}
                         className="flex items-center gap-3 px-4 py-3 text-sm w-full text-left transition-all hover:bg-white/5"
@@ -564,8 +569,8 @@ export default function Header({
             <>
               <Link
                 href="/auth/login"
-                className="hidden sm:block px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:text-white"
-                style={{ color: '#8d97b8' }}
+                className="hidden sm:block px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:brightness-110"
+                style={{ color: 'var(--text-secondary)' }}
               >
                 Se connecter
               </Link>
@@ -581,9 +586,12 @@ export default function Header({
           )}
 
           {/* Hamburger — visible sm et md (pas sur desktop) */}
+          <ThemeToggle />
+
+          {/* Hamburger — visible sm et md (pas sur desktop) */}
           <button
             className="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg"
-            style={{ background: 'rgba(255,255,255,0.05)', color: '#8d97b8' }}
+            style={{ background: 'var(--bg-item-hover)', color: 'var(--text-secondary)' }}
           >
             <Menu size={16} />
           </button>
@@ -605,7 +613,7 @@ export default function Header({
       <div
         className="no-scrollbar overflow-x-auto"
         style={{
-          borderTop: '1px solid rgba(255,255,255,0.05)',
+          borderTop: '1px solid var(--border-light)',
           height: searchOpen ? 0 : 42,
           display: 'flex',
           alignItems: 'stretch',
@@ -631,7 +639,7 @@ export default function Header({
                 paddingRight: 12,
                 fontSize: 14,
                 fontWeight: active ? 600 : 400,
-                color: active ? '#fff' : '#6b7db3',
+                color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
                 whiteSpace: 'nowrap',
                 position: 'relative',
                 flexShrink: 0,
@@ -639,8 +647,8 @@ export default function Header({
                 textDecoration: 'none',
                 height: '100%',
               }}
-              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.color = '#a0aad0'; }}
-              onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.color = '#6b7db3'; }}
+              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.color = 'var(--text-label)'; }}
+              onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
             >
               {label}
               {/* Underline active — colle au bas de la barre */}
@@ -680,14 +688,17 @@ function SearchMarketRow({
     <Link
       href={`/market/${market._id}`}
       onClick={onSelect}
-      className="flex items-center gap-3 rounded-xl px-3 py-2 transition-all hover:bg-white/5"
+      className="flex items-center gap-3 rounded-xl px-3 py-2 transition-all hover:brightness-105"
+      style={{ background: 'transparent' }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--bg-item-hover)'; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
     >
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
         style={{
-          background: market.status === 'live' ? 'rgba(0,230,118,0.14)' : 'rgba(255,255,255,0.05)',
-          border: `1px solid ${market.status === 'live' ? 'rgba(0,230,118,0.24)' : 'rgba(255,255,255,0.08)'}`,
-          color: market.status === 'live' ? '#00e676' : '#9aa6d1',
+          background: market.status === 'live' ? 'rgba(0,230,118,0.14)' : 'var(--bg-item-hover)',
+          border: `1px solid ${market.status === 'live' ? 'rgba(0,230,118,0.24)' : 'var(--border)'}`,
+          color: market.status === 'live' ? 'var(--accent-green)' : 'var(--text-secondary)',
         }}
       >
         {market.status === 'live' ? <Flame size={15} /> : <Search size={15} />}
@@ -697,24 +708,24 @@ function SearchMarketRow({
         <div className="flex items-center gap-2 mb-0.5">
           <p
             className="text-sm font-semibold truncate"
-            style={{ color: '#f5f7ff', maxWidth: compact ? '100%' : undefined }}
+            style={{ color: 'var(--text-bright)', maxWidth: compact ? '100%' : undefined }}
           >
             {market.title}
           </p>
           {market.status === 'live' && (
             <span
               className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black"
-              style={{ background: 'rgba(0,230,118,0.12)', color: '#00e676' }}
+              style={{ background: 'rgba(0,230,118,0.12)', color: 'var(--accent-green)' }}
             >
               LIVE
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2 text-xs flex-wrap" style={{ color: '#6b7db3' }}>
+        <div className="flex items-center gap-2 text-xs flex-wrap" style={{ color: 'var(--text-secondary)' }}>
           <span>{CATEGORY_LABELS[market.category]}</span>
           {market.subcategory && <span>{market.subcategory}</span>}
           {topOption && (
-            <span style={{ color: '#d7def8' }}>
+            <span style={{ color: 'var(--text-label)' }}>
               {topOption.label} {topOption.probability}%
             </span>
           )}
@@ -724,21 +735,21 @@ function SearchMarketRow({
       {!compact && (
         <div className="hidden sm:flex items-center gap-3 shrink-0">
           <div className="text-right">
-            <p className="text-xs font-bold" style={{ color: '#d7def8' }}>
+            <p className="text-xs font-bold" style={{ color: 'var(--text-label)' }}>
               {formatVolume(market.totalVolume)}
             </p>
-            <p className="text-[11px]" style={{ color: '#4a5380' }}>
+            <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
               volume
             </p>
           </div>
           <div
             className="flex items-center gap-1 text-xs rounded-full px-2 py-1"
-            style={{ background: 'rgba(255,255,255,0.04)', color: '#8d97b8' }}
+            style={{ background: 'var(--bg-item)', color: 'var(--text-secondary)' }}
           >
             <Clock size={11} />
             {formatTimeLabel(market.endsAt)}
           </div>
-          <ArrowUpRight size={14} style={{ color: '#4a5380' }} />
+          <ArrowUpRight size={14} style={{ color: 'var(--text-muted)' }} />
         </div>
       )}
     </Link>
@@ -760,9 +771,11 @@ function TopNavItem({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider transition-colors whitespace-nowrap shrink-0 ${
-        active ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white hover:bg-white/5'
-      }`}
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider transition-all whitespace-nowrap shrink-0 hover:brightness-110"
+      style={{
+        background: active ? 'var(--bg-item-hover)' : 'transparent',
+        color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
+      }}
     >
       {redBadge !== undefined && (
         <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
