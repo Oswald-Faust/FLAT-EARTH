@@ -617,6 +617,13 @@ export default function MarketPage({ params }: PageProps) {
   const commentsRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
 
+  const handleSelectOutcome = (idx: number, side?: 'yes' | 'no') => {
+    setSelectedIdx(idx);
+    if (side) setBetSide(side);
+    if (!tradeAmount) setTradeAmount('10');
+    panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
   // ── Chargement marché ──
   useEffect(() => {
     setLoading(true);
@@ -966,9 +973,11 @@ export default function MarketPage({ params }: PageProps) {
               return (
                 <div
                   key={String(opt._id)}
+                  onClick={() => handleSelectOutcome(idx)}
                   className="flex items-center gap-3 px-3 py-3.5 transition-all hover:bg-white/[0.025] cursor-pointer"
                   style={{
                     borderBottom: '1px solid var(--border-light)',
+                    background: selectedIdx === idx ? 'var(--bg-item)' : 'transparent',
                   }}
                 >
                   {/* Option icon */}
@@ -1003,11 +1012,9 @@ export default function MarketPage({ params }: PageProps) {
 
                   {/* Yes button */}
                   <button
-                    onClick={() => {
-                      setSelectedIdx(idx);
-                      setBetSide('yes');
-                      if (!tradeAmount) setTradeAmount('10');
-                      panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelectOutcome(idx, 'yes');
                     }}
                     className="rounded-full font-black text-sm transition-all hover:brightness-115 active:scale-95"
                     style={{
@@ -1023,11 +1030,9 @@ export default function MarketPage({ params }: PageProps) {
 
                   {/* No button */}
                   <button
-                    onClick={() => {
-                      setSelectedIdx(idx);
-                      setBetSide('no');
-                      if (!tradeAmount) setTradeAmount('10');
-                      panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelectOutcome(idx, 'no');
                     }}
                     className="rounded-full font-black text-sm transition-all hover:brightness-115 active:scale-95"
                     style={{

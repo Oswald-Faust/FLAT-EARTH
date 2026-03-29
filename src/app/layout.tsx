@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`h-full ${spaceGrotesk.variable}`}>
+    <html lang="fr" className={`h-full ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <head>
         {/* Anti-FOUC : applique la classe 'light' avant le premier rendu */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.add('light');})();` }} />

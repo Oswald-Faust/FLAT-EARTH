@@ -3,11 +3,12 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, User, Menu, LogOut, Wallet, Settings, ChevronDown, ArrowUpRight, Clock, Flame, Plus, Trophy, Gift, Users } from 'lucide-react';
+import { Search, User, Menu, LogOut, Wallet, Settings, ChevronDown, ArrowUpRight, Clock, Flame, Plus, Trophy, Gift, Users, Eye, EyeOff } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
 import { CATEGORY_LABELS, MarketCategory, type IMarket } from '@/types';
 import DepositModal from '@/components/wallet/DepositModal';
 import ThemeToggle from '@/components/layout/ThemeToggle';
+import { getStoredWalletVisibility, maskCurrency, setStoredWalletVisibility, WALLET_VISIBILITY_STORAGE_KEY } from '@/lib/wallet-privacy';
 
 interface HeaderProps {
   coins?: number;
@@ -80,12 +81,35 @@ export default function Header({
   const [discoverMarkets, setDiscoverMarkets] = useState<SearchResultMarket[]>([]);
   const [depositOpen,   setDepositOpen]   = useState(false);
   const [walletBalance, setWalletBalance] = useState<number>(initialBalance);
+  const [isBalanceVisible, setIsBalanceVisible] = useState(() => getStoredWalletVisibility());
   const menuRef   = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
 
   const loggedIn  = isLoggedIn || !!session?.user;
   const username  = (session?.user as { name?: string })?.name ?? '';
+  const formattedWalletBalance = `${(walletBalance / 100).toFixed(2)} €`;
+  const walletBalanceLabel = isBalanceVisible ? formattedWalletBalance : maskCurrency(formattedWalletBalance);
+
+  const toggleBalanceVisibility = () => {
+    setIsBalanceVisible((current) => {
+      const nextValue = !current;
+      setStoredWalletVisibility(nextValue);
+      return nextValue;
+    });
+  };
+
+  useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === WALLET_VISIBILITY_STORAGE_KEY) {
+        setIsBalanceVisible(getStoredWalletVisibility());
+      }
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
   // Charger le solde wallet quand l'utilisateur est connecté
   useEffect(() => {
     if (!loggedIn) return;
@@ -94,6 +118,43 @@ export default function Header({
       .then(d => { if (typeof d.balance === 'number') setWalletBalance(d.balance); })
       .catch(() => {});
   }, [loggedIn]);
+
+  useEffect(() => {
+    if (!loggedIn || pathname !== '/') return;
+
+    const params = new URLSearchParams(window.location.search);
+    const walletState = params.get('wallet');
+    const sessionId = params.get('session_id');
+
+    if (walletState === 'success' && sessionId) {
+      fetch('/api/wallet/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId }),
+      })
+        .then((r) => r.json())
+        .then(() => fetch('/api/wallet/balance'))
+        .then((r) => r.json())
+        .then((d) => { if (typeof d.balance === 'number') setWalletBalance(d.balance); })
+        .catch(() => {})
+        .finally(() => {
+          const cleanUrl = new URL(window.location.href);
+          cleanUrl.searchParams.delete('wallet');
+          cleanUrl.searchParams.delete('amount');
+          cleanUrl.searchParams.delete('session_id');
+          window.history.replaceState({}, '', cleanUrl.pathname + cleanUrl.search);
+        });
+      return;
+    }
+
+    if (walletState === 'cancelled') {
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete('wallet');
+      cleanUrl.searchParams.delete('amount');
+      cleanUrl.searchParams.delete('session_id');
+      window.history.replaceState({}, '', cleanUrl.pathname + cleanUrl.search);
+    }
+  }, [loggedIn, pathname]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -450,20 +511,20 @@ export default function Header({
           {loggedIn ? (
             <>
               {/* Wallet balance + bouton Déposer */}
-              <button
-                onClick={() => setDepositOpen(true)}
+              <Link
+                href="/wallet"
                 className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-bold transition-all hover:brightness-110 group"
                 style={{ background: 'rgba(0,230,118,0.07)', border: '1px solid rgba(0,230,118,0.2)', color: '#00e676' }}
               >
                 <Wallet size={13} />
-                <span>{(walletBalance / 100).toFixed(2)} €</span>
+                <span>{walletBalanceLabel}</span>
                 <span
                   className="text-[10px] font-black px-1.5 py-0.5 rounded-lg transition-all"
                   style={{ background: 'rgba(0,230,118,0.15)', color: '#00e676' }}
                 >
                   + Déposer
                 </span>
-              </button>
+              </Link>
 
               {/* Créer un pari */}
               <Link
@@ -514,9 +575,21 @@ export default function Header({
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-bold truncate" style={{ color: 'var(--text-primary)' }}>{username}</p>
-                        <p className="text-xs font-semibold" style={{ color: 'var(--accent-green)' }}>
-                          {(walletBalance / 100).toFixed(2)} € disponible
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs font-semibold" style={{ color: 'var(--accent-green)' }}>
+                            {walletBalanceLabel} disponible
+                          </p>
+                          <button
+                            type="button"
+                            onClick={toggleBalanceVisibility}
+                            className="inline-flex items-center justify-center w-6 h-6 rounded-md transition-all hover:brightness-110"
+                            style={{ background: 'var(--bg-item)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}
+                            aria-label={isBalanceVisible ? 'Masquer le solde' : 'Afficher le solde'}
+                            title={isBalanceVisible ? 'Masquer le solde' : 'Afficher le solde'}
+                          >
+                            {isBalanceVisible ? <Eye size={12} /> : <EyeOff size={12} />}
+                          </button>
+                        </div>
                       </div>
                     </div>
 
@@ -532,6 +605,7 @@ export default function Header({
 
                     {/* Menu items */}
                     {[
+                      { href: '/wallet',        icon: <Wallet size={14} />,  label: 'Portefeuille' },
                       { href: '/profile',       icon: <User size={14} />,    label: 'Mon profil' },
                       { href: '/referrals',     icon: <Users size={14} />,   label: 'Parrainage' },
                       { href: '/leaderboard',   icon: <Trophy size={14} />,  label: 'Classement' },

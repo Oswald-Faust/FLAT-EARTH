@@ -1,26 +1,29 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import Link from 'next/link';
-import { CreditCard, DollarSign, Wallet, ArrowDownRight, ArrowUpRight, Trophy, Undo, ChevronLeft, ChevronRight, Activity, Award } from 'lucide-react';
-import { formatCoins } from '@/lib/utils';
+import { useEffect, useState } from 'react';
+import { CreditCard, DollarSign, Wallet, ArrowDownRight, ChevronLeft, ChevronRight, Activity, PlusCircle, ReceiptText } from 'lucide-react';
 
 interface Transaction {
-  _id: string; 
-  amount: number; 
-  type: 'purchase' | 'bet' | 'win' | 'creator_fee' | 'refund';
+  _id: string;
+  amountCents: number;
+  type: 'coin_pack' | 'wallet_deposit' | 'market_creation' | 'bet';
   createdAt: string;
   reference?: string;
+  label: string;
+  status?: string;
   userId?: { _id: string; username?: string; email?: string };
 }
 
 const TYPE_STYLE: Record<string, { icon: React.ReactNode; bg: string; text: string; label: string }> = {
-  purchase:    { icon: <CreditCard className="w-4 h-4"/>,   bg: 'bg-emerald-50 dark:bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400', label: 'Achat de crédit' },
-  bet:         { icon: <ArrowDownRight className="w-4 h-4"/>,bg: 'bg-red-50 dark:bg-red-500/10',        text: 'text-red-600 dark:text-red-400',         label: 'Placement Pari' },
-  win:         { icon: <Trophy className="w-4 h-4"/>,       bg: 'bg-amber-50 dark:bg-amber-500/10',     text: 'text-amber-600 dark:text-amber-400',     label: 'Gain de pari' },
-  creator_fee: { icon: <Award className="w-4 h-4"/>,        bg: 'bg-purple-50 dark:bg-purple-500/10',   text: 'text-purple-600 dark:text-purple-400',   label: 'Frais Créateur' },
-  refund:      { icon: <Undo className="w-4 h-4"/>,         bg: 'bg-blue-50 dark:bg-blue-500/10',       text: 'text-blue-600 dark:text-blue-400',       label: 'Remboursement' },
+  coin_pack:       { icon: <CreditCard className="w-4 h-4"/>,    bg: 'bg-emerald-50 dark:bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400', label: 'Achat pack coins' },
+  wallet_deposit:  { icon: <Wallet className="w-4 h-4"/>,        bg: 'bg-blue-50 dark:bg-blue-500/10',       text: 'text-blue-600 dark:text-blue-400',       label: 'Dépôt wallet' },
+  market_creation: { icon: <PlusCircle className="w-4 h-4"/>,    bg: 'bg-purple-50 dark:bg-purple-500/10',   text: 'text-purple-600 dark:text-purple-400',   label: 'Création marché' },
+  bet:             { icon: <ArrowDownRight className="w-4 h-4"/>,bg: 'bg-red-50 dark:bg-red-500/10',         text: 'text-red-600 dark:text-red-400',         label: 'Placement pari' },
 };
+
+function formatEur(cents: number) {
+  return `${(cents / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+}
 
 function StatBox({ label, value, icon, colorClass }: { label: string; value: string; icon: React.ReactNode; colorClass: string }) {
   return (
@@ -40,21 +43,23 @@ export default function PaymentsAdminPage() {
   const [data, setData] = useState<Transaction[]>([]);
   const [total, setTotal] = useState(0);
   const [pages, setPages] = useState(1);
-  const [stats, setStats] = useState({ totalPurchasesVolume: 0 });
+  const [stats, setStats] = useState({
+    totalCheckoutVolumeCents: 0,
+    totalBetVolumeCents: 0,
+    totalTransactions: 0,
+    counts: { wallet_deposit: 0, coin_pack: 0, market_creation: 0, bet: 0 },
+  });
   
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [typeFilter, setTypeFilter] = useState('purchase'); // Défaut sur les achats
+  const [typeFilter, setTypeFilter] = useState('all');
   
-  const load = useCallback(() => {
-    setLoading(true);
-    const params = new URLSearchParams({
+  useEffect(() => {
+    fetch(`/api/admin/payments?${new URLSearchParams({
       page: String(page),
       limit: '15',
       type: typeFilter,
-    });
-    
-    fetch(`/api/admin/payments?${params}`)
+    })}`)
       .then(r => r.json())
       .then(d => {
         setData(d.transactions || []);
@@ -66,24 +71,28 @@ export default function PaymentsAdminPage() {
       .finally(() => setLoading(false));
   }, [page, typeFilter]);
 
-  useEffect(() => { load(); }, [load]);
-
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-1">Paiements & Flux</h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">Supervisez l'économie virtuelle et les paiements de la plateforme.</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">Supervisez l&apos;économie virtuelle et les paiements de la plateforme.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <StatBox
-          label="Volume Total des Achats"
-          value={`🪙 ${formatCoins(stats.totalPurchasesVolume)}`}
+          label="Volume Total des Paiements"
+          value={formatEur(stats.totalCheckoutVolumeCents)}
           icon={<DollarSign className="w-5 h-5" />}
           colorClass="text-emerald-500"
         />
         <StatBox
-          label="Transactions (Filtre actuel)"
+          label="Volume Total des Paris"
+          value={formatEur(stats.totalBetVolumeCents)}
+          icon={<ReceiptText className="w-5 h-5" />}
+          colorClass="text-red-500"
+        />
+        <StatBox
+          label="Transactions (Filtre courant)"
           value={`${total}`}
           icon={<Activity className="w-5 h-5" />}
           colorClass="text-blue-500"
@@ -93,11 +102,10 @@ export default function PaymentsAdminPage() {
       <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-sm overflow-hidden flex flex-col">
         <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex flex-wrap gap-2 bg-zinc-50/50 dark:bg-zinc-800/20">
           {[
-            { v: 'purchase', label: 'Achats uniquement' },
+            { v: 'wallet_deposit', label: 'Dépôts wallet' },
+            { v: 'coin_pack', label: 'Achats coins' },
+            { v: 'market_creation', label: 'Créations marchés' },
             { v: 'bet', label: 'Paris' },
-            { v: 'win', label: 'Gains' },
-            { v: 'creator_fee', label: 'Frais Créateur' },
-            { v: 'refund', label: 'Remboursements' },
             { v: 'all', label: 'Tous les flux' },
           ].map((f) => {
             const active = typeFilter === f.v;
@@ -120,6 +128,7 @@ export default function PaymentsAdminPage() {
                 <th className="px-6 py-4 font-medium">Type</th>
                 <th className="px-6 py-4 font-medium">Utilisateur</th>
                 <th className="px-6 py-4 font-medium">Montant</th>
+                <th className="px-6 py-4 font-medium">Statut</th>
                 <th className="px-6 py-4 font-medium">Date</th>
                 <th className="px-6 py-4 font-medium text-right">Référence</th>
               </tr>
@@ -127,7 +136,7 @@ export default function PaymentsAdminPage() {
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-zinc-500">
+                  <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
                     <div className="flex flex-col items-center justify-center gap-3">
                       <div className="w-6 h-6 border-2 border-zinc-300 dark:border-zinc-700 border-t-zinc-800 dark:border-t-zinc-300 rounded-full animate-spin"></div>
                       Chargement des transactions...
@@ -136,16 +145,16 @@ export default function PaymentsAdminPage() {
                 </tr>
               ) : data.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-16 text-center">
+                  <td colSpan={6} className="px-6 py-16 text-center">
                     <Wallet className="w-8 h-8 mx-auto text-zinc-300 dark:text-zinc-700 mb-3" />
                     <p className="font-semibold text-zinc-900 dark:text-zinc-100">Aucune transaction trouvée.</p>
-                    <p className="text-zinc-500 mt-1">Modifiez vos filtres pour voir d'autres résultats.</p>
+                    <p className="text-zinc-500 mt-1">Modifiez vos filtres pour voir d&apos;autres résultats.</p>
                   </td>
                 </tr>
               ) : (
                 data.map(tx => {
-                  const style = TYPE_STYLE[tx.type] ?? TYPE_STYLE.purchase;
-                  const isPositive = ['purchase', 'win', 'creator_fee', 'refund'].includes(tx.type);
+                  const style = TYPE_STYLE[tx.type] ?? TYPE_STYLE.coin_pack;
+                  const isPositive = tx.type !== 'bet';
                   
                   return (
                     <tr key={tx._id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors">
@@ -166,7 +175,12 @@ export default function PaymentsAdminPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`font-bold flex items-center gap-1.5 ${isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-zinc-900 dark:text-zinc-100'}`}>
-                          {isPositive ? '+' : '-'}{formatCoins(tx.amount)} 🪙
+                          {isPositive ? '+' : '-'}{formatEur(Math.abs(tx.amountCents))}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 capitalize">
+                          {tx.status ?? 'completed'}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">

@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import {
   ArrowLeft, X, Check, Plus, Trash2, Shuffle,
   Search, Target, Scale, Globe, AlertTriangle,
-  ChevronRight, Sparkles, CreditCard, RotateCcw,
+  Sparkles, CreditCard, RotateCcw,
 } from 'lucide-react';
 import { CATEGORY_LABELS, type MarketCategory } from '@/types';
 import CategoryIcon, { CATEGORY_COLORS } from '@/components/ui/CategoryIcon';
@@ -83,13 +83,14 @@ const IS: React.CSSProperties = {
 // ─── Page principale ──────────────────────────────────────────────────────────
 export default function CreateMarketPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [step, setStep] = useState(1); // 1-4
 
   // ── State success / cancel (retour depuis Stripe) ──────────────────────────
   const [submitted,   setSubmitted]   = useState(false);
   const [cancelled,   setCancelled]   = useState(false);
   const [createdId,   setCreatedId]   = useState('');
+  const [confirmingPayment, setConfirmingPayment] = useState(false);
 
   // ── Step 1 — Question ──────────────────────────────────────────────────────
   const [title,        setTitle]       = useState('');
@@ -122,15 +123,86 @@ export default function CreateMarketPage() {
 
   // Redirect si non connecté + détection retour Stripe
   useEffect(() => {
-    if (status === 'unauthenticated') router.push('/auth/login?from=/create-market');
-    if (status === 'authenticated') {
-      const params = new URLSearchParams(window.location.search);
-      const isSuccess   = params.get('success') === '1';
-      const isCancelled = params.get('cancelled') === '1';
-      const mId         = params.get('marketId') ?? '';
-      if (isSuccess && mId) { setCreatedId(mId); setSubmitted(true); }
-      if (isCancelled)       { setCancelled(true); }
+    if (status === 'unauthenticated') {
+      router.push('/auth/login?from=/create-market');
+      return;
     }
+
+    if (status !== 'authenticated') {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const isSuccess = params.get('success') === '1';
+    const isCancelled = params.get('cancelled') === '1';
+    const marketId = params.get('marketId') ?? '';
+    const sessionId = params.get('session_id') ?? '';
+
+    if (isCancelled) {
+      setCancelled(true);
+      return;
+    }
+
+    if (!isSuccess || !marketId) {
+      return;
+    }
+
+    let cancelledEffect = false;
+
+    const confirmMarketCreation = async () => {
+      if (!sessionId) {
+        if (!cancelledEffect) {
+          setCreatedId(marketId);
+          setSubmitted(true);
+        }
+        return;
+      }
+
+      if (!cancelledEffect) {
+        setConfirmingPayment(true);
+        setSubmitError('');
+      }
+
+      try {
+        const res = await fetch('/api/user/markets/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId, marketId }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          if (!cancelledEffect) {
+            setSubmitError(data.error ?? 'Paiement confirmé, mais impossible de finaliser la soumission');
+          }
+          return;
+        }
+
+        if (!cancelledEffect) {
+          setCreatedId(data.marketId ?? marketId);
+          setSubmitted(true);
+          const nextUrl = new URL(window.location.href);
+          nextUrl.searchParams.delete('success');
+          nextUrl.searchParams.delete('marketId');
+          nextUrl.searchParams.delete('session_id');
+          window.history.replaceState({}, '', nextUrl.toString());
+        }
+      } catch {
+        if (!cancelledEffect) {
+          setSubmitError('Paiement confirmé, mais impossible de finaliser la soumission');
+        }
+      } finally {
+        if (!cancelledEffect) {
+          setConfirmingPayment(false);
+        }
+      }
+    };
+
+    void confirmMarketCreation();
+
+    return () => {
+      cancelledEffect = true;
+    };
   }, [status, router]);
 
   // ── Step validation ────────────────────────────────────────────────────────
@@ -742,14 +814,19 @@ export default function CreateMarketPage() {
 
               <button
                 onClick={handleSubmit}
-                disabled={submitting}
+                disabled={submitting || confirmingPayment}
                 className="w-full py-4 rounded-2xl text-base font-black flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
                 style={{
-                  background: submitting ? 'var(--bg-item-hover)' : 'linear-gradient(135deg, #00e676, #00b8d4)',
-                  color: submitting ? 'var(--text-muted)' : '#000',
+                  background: submitting || confirmingPayment ? 'var(--bg-item-hover)' : 'linear-gradient(135deg, #00e676, #00b8d4)',
+                  color: submitting || confirmingPayment ? 'var(--text-muted)' : '#000',
                 }}
               >
-                {submitting ? (
+                {confirmingPayment ? (
+                  <>
+                    <div className="w-4 h-4 rounded-full border-2 animate-spin" style={{ borderColor: 'var(--text-muted)', borderTopColor: 'transparent' }} />
+                    Confirmation du paiement…
+                  </>
+                ) : submitting ? (
                   <>
                     <div className="w-4 h-4 rounded-full border-2 animate-spin" style={{ borderColor: 'var(--text-muted)', borderTopColor: 'transparent' }} />
                     Préparation du paiement…

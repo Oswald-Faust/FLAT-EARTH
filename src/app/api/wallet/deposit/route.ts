@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
         userId,
         cents: String(amount),
       },
-      success_url: `${BASE_URL}/?wallet=success&amount=${amount}`,
+      success_url: `${BASE_URL}/?wallet=success&amount=${amount}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url:  `${BASE_URL}/?wallet=cancelled`,
     });
 

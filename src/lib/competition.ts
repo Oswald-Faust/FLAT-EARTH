@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { PipelineStage } from 'mongoose';
 import Bet from '@/models/Bet';
 import Market from '@/models/Market';
 import User from '@/models/User';
@@ -30,10 +30,17 @@ interface RawLeaderboardRow {
   volume: number;
   profit: number;
   rewards: number;
+  winRate: number;
   totalBets: number;
   wonBets: number;
   lostBets: number;
   pendingBets: number;
+}
+
+type SortableLeaderboardRow = Pick<LeaderboardRow, 'username' | 'volume' | 'profit' | 'rewards' | 'winRate'>;
+
+function hasMarketTitle(value: unknown): value is { title?: string } {
+  return !!value && typeof value === 'object' && 'title' in value;
 }
 
 function getRangeStart(range: LeaderboardRange): Date | null {
@@ -57,14 +64,14 @@ function getRangeStart(range: LeaderboardRange): Date | null {
   return null;
 }
 
-function getSortValue(row: RawLeaderboardRow, sort: LeaderboardSort): number {
+function getSortValue(row: SortableLeaderboardRow, sort: LeaderboardSort): number {
   if (sort === 'volume') return row.volume;
   if (sort === 'rewards') return row.rewards;
   if (sort === 'winRate') return row.winRate;
   return row.profit;
 }
 
-function compareRows(a: RawLeaderboardRow, b: RawLeaderboardRow, sort: LeaderboardSort): number {
+function compareRows(a: SortableLeaderboardRow, b: SortableLeaderboardRow, sort: LeaderboardSort): number {
   const primary = getSortValue(b, sort) - getSortValue(a, sort);
   if (primary !== 0) return primary;
 
@@ -113,7 +120,7 @@ export async function getLeaderboardData({
     match.createdAt = { $gte: rangeStart };
   }
 
-  const pipeline: Record<string, unknown>[] = [
+  const pipeline: PipelineStage[] = [
     { $match: match },
     {
       $lookup: {
@@ -263,7 +270,7 @@ export async function getRewardOverview(userId: string) {
 
     return {
       id: String(bet._id),
-      marketTitle: typeof bet.marketId === 'object' && bet.marketId ? bet.marketId.title : 'Marché',
+      marketTitle: hasMarketTitle(bet.marketId) ? bet.marketId.title : 'Marché',
       status: bet.status,
       amount: bet.amount,
       points: basePoints,

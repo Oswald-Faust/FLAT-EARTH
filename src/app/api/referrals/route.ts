@@ -6,6 +6,10 @@ import ReferralReward from '@/models/ReferralReward';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
+function hasUsername(value: unknown): value is { username?: string } {
+  return !!value && typeof value === 'object' && 'username' in value;
+}
+
 export async function GET() {
   try {
     const session = await auth();
@@ -84,7 +88,7 @@ export async function GET() {
       })),
       payouts: rewardEvents.map((event) => ({
         id: String(event._id),
-        refereeUsername: typeof event.refereeId === 'object' && event.refereeId ? event.refereeId.username : 'Utilisateur',
+        refereeUsername: hasUsername(event.refereeId) ? event.refereeId.username : 'Utilisateur',
         rewardCoins: event.rewardCoins,
         sourceType: event.sourceType,
         sourceAmountCents: event.sourceAmountCents,

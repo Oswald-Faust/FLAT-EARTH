@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
@@ -85,8 +85,7 @@ function KInput({
   );
 }
 
-// ─── Page ──────────────────────────────────────────────────────────────────────
-export default function RegisterPage() {
+function RegisterPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -368,5 +367,35 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function RegisterPageFallback() {
+  return (
+    <div className="min-h-screen flex flex-col" style={{ background: '#0f1117' }}>
+      <div className="flex items-center justify-between px-6 py-4">
+        <div className="w-10 h-10" />
+        <Logo />
+        <div className="w-10 h-10" />
+      </div>
+      <div className="flex justify-center px-6 pb-2">
+        <ProgressBar step={1} total={3} />
+      </div>
+      <div className="flex-1 flex items-start justify-center px-6 pt-10">
+        <div className="w-full" style={{ maxWidth: 480 }}>
+          <div className="h-8 w-72 rounded-xl animate-pulse" style={{ background: 'rgba(255,255,255,0.08)' }} />
+          <div className="mt-8 h-14 rounded-2xl animate-pulse" style={{ background: 'rgba(255,255,255,0.06)' }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Page ──────────────────────────────────────────────────────────────────────
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<RegisterPageFallback />}>
+      <RegisterPageContent />
+    </Suspense>
   );
 }
