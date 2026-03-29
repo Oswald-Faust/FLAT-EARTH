@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #0f1117;
+  --bg-secondary: #161b26;
+  --bg-card: #161b26;
+  --bg-card-hover: #1e2535;
+  --border: rgba(255,255,255,0.09);
+  --border-light: rgba(255,255,255,0.05);
+  --accent-green: #00e676;
+  --accent-gold: #ffd700;
+  --accent-blue: #4fc3f7;
+  --text-primary: #ffffff;
+  --text-secondary: #8d97b8;
+  --text-muted: #4e5878;
+  --yes-color: #00e676;
+  --no-color: #f44336;
+  --yes-bg: rgba(0, 230, 118, 0.12);
+  --no-bg: rgba(244, 67, 54, 0.12);
+  --header-height: 56px;
+  --subnav-height: 40px;
+}
+
+@theme inline {
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar fine ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Hide horizontal scrollbar (nav pills) ────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-7px); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(110px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(110px) rotate(-360deg); }
+}
+@keyframes orbit-moon {
+  from { transform: rotate(180deg) translateX(110px) rotate(-180deg); }
+  to   { transform: rotate(540deg) translateX(110px) rotate(-540deg); }
+}
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+/* ── Utility classes ─────────────────────────────────────────────────────── */
+.animate-slideInRight { animation: slideInRight 0.28s cubic-bezier(0.25,0.46,0.45,0.94) both; }
+.animate-slideInLeft  { animation: slideInLeft  0.28s cubic-bezier(0.25,0.46,0.45,0.94) both; }
+.animate-fadeIn       { animation: fadeIn 0.22s ease both; }
+.animate-fadeInUp     { animation: fadeInUp 0.35s ease both; }
+.animate-float        { animation: float 3.5s ease-in-out infinite; }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+}
+.card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(79, 195, 247, 0.22);
+  transform: translateY(-1px);
+}
+
+.btn-yes {
+  background: var(--yes-bg);
+  border: 1px solid rgba(0,230,118,0.5);
+  color: var(--yes-color);
+  transition: all 0.15s;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+.btn-yes:hover {
+  background: var(--yes-color);
+  color: #000;
+}
+.btn-no {
+  background: var(--no-bg);
+  border: 1px solid rgba(244,67,54,0.5);
+  color: var(--no-color);
+  transition: all 0.15s;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+.btn-no:hover {
+  background: var(--no-color);
+  color: #fff;
+}
+
+.text-muted { color: var(--text-muted); }
+.text-secondary { color: var(--text-secondary); }
