@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, User, Menu, LogOut, Wallet, Settings, ChevronDown, ArrowUpRight, Clock, Flame, Plus } from 'lucide-react';
+import { Search, User, Menu, LogOut, Wallet, Settings, ChevronDown, ArrowUpRight, Clock, Flame, Plus, Trophy, Gift, Users } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
 import { CATEGORY_LABELS, MarketCategory, type IMarket } from '@/types';
 import DepositModal from '@/components/wallet/DepositModal';
@@ -65,7 +65,6 @@ function formatTimeLabel(date: Date | string): string {
 }
 
 export default function Header({
-  coins = 0,
   isLoggedIn = false,
   liveCount = 20,
   initialBalance = 0,
@@ -87,8 +86,6 @@ export default function Header({
 
   const loggedIn  = isLoggedIn || !!session?.user;
   const username  = (session?.user as { name?: string })?.name ?? '';
-  const userCoins = coins;
-
   // Charger le solde wallet quand l'utilisateur est connecté
   useEffect(() => {
     if (!loggedIn) return;
@@ -416,7 +413,7 @@ export default function Header({
                     {!searchLoading && visibleResults.length === 0 && (
                       <div className="px-3 py-8 text-center">
                         <p className="text-sm font-semibold mb-1" style={{ color: 'var(--text-bright)' }}>
-                          Aucun marché trouvé pour "{search.trim()}"
+                          Aucun marché trouvé pour &quot;{search.trim()}&quot;
                         </p>
                         <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
                           Essaie un titre, une équipe, un sujet ou une catégorie.
@@ -536,6 +533,9 @@ export default function Header({
                     {/* Menu items */}
                     {[
                       { href: '/profile',       icon: <User size={14} />,    label: 'Mon profil' },
+                      { href: '/referrals',     icon: <Users size={14} />,   label: 'Parrainage' },
+                      { href: '/leaderboard',   icon: <Trophy size={14} />,  label: 'Classement' },
+                      { href: '/rewards',       icon: <Gift size={14} />,    label: 'Récompenses' },
                       { href: '/create-market', icon: <Plus size={14} />,    label: 'Créer un pari' },
                       { href: '/settings',      icon: <Settings size={14} />, label: 'Paramètres' },
                     ].map(item => (

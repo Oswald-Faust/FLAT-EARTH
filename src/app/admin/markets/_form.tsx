@@ -6,6 +6,7 @@ import {
   Plus, Trash2, CheckCircle, AlertCircle, Shuffle,
   Info, Tag, ToggleLeft, Calendar, Save, FileEdit
 } from 'lucide-react';
+import CategoryIcon, { CATEGORY_COLORS } from '@/components/ui/CategoryIcon';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Option { label: string; probability: number }
@@ -232,14 +233,20 @@ export default function MarketForm({ initial, mode }: MarketFormProps) {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
               {categories.map(c => {
                 const active = category === c.slug;
+                const icolor = CATEGORY_COLORS[c.slug] ?? '#8d97b8';
                 return (
                   <button
                     key={c._id}
                     type="button"
                     onClick={() => setCategory(c.slug)}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all border ${active ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100 shadow-sm' : 'bg-zinc-50 dark:bg-zinc-800/30 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700/50 hover:bg-zinc-100 dark:hover:bg-zinc-800'}`}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all border ${!active ? 'bg-zinc-50 dark:bg-zinc-800/30 text-zinc-500 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700/50 hover:bg-zinc-100 dark:hover:bg-zinc-800' : ''}`}
+                    style={active ? {
+                      background: `${icolor}18`,
+                      borderColor: `${icolor}55`,
+                      color: icolor,
+                    } : {}}
                   >
-                    <span>{c.icon}</span>
+                    <CategoryIcon slug={c.slug} size={14} strokeWidth={2} />
                     <span className="truncate">{c.name}</span>
                   </button>
                 );

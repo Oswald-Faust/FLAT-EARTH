@@ -9,7 +9,8 @@ import {
   Search, Target, Scale, Globe, AlertTriangle,
   ChevronRight, Sparkles, CreditCard, RotateCcw,
 } from 'lucide-react';
-import { CATEGORY_ICONS, CATEGORY_LABELS, type MarketCategory } from '@/types';
+import { CATEGORY_LABELS, type MarketCategory } from '@/types';
+import CategoryIcon, { CATEGORY_COLORS } from '@/components/ui/CategoryIcon';
 
 // ─── Constantes ────────────────────────────────────────────────────────────────
 const CREATION_COST_EUR = 5;
@@ -33,9 +34,9 @@ function StepBadge({ n, active, done }: { n: number; active: boolean; done: bool
     <div
       className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-all shrink-0"
       style={{
-        background: done ? '#00e676' : active ? 'rgba(0,230,118,0.2)' : 'rgba(255,255,255,0.07)',
-        border: `2px solid ${done ? '#00e676' : active ? '#00e676' : 'rgba(255,255,255,0.1)'}`,
-        color: done ? '#000' : active ? '#00e676' : '#4a5380',
+        background: done ? '#00e676' : active ? 'rgba(0,230,118,0.2)' : 'var(--bg-item-hover)',
+        border: `2px solid ${done ? '#00e676' : active ? '#00e676' : 'var(--border-medium)'}`,
+        color: done ? '#000' : active ? '#00e676' : 'var(--text-muted)',
       }}
     >
       {done ? <Check size={12} strokeWidth={3} /> : n}
@@ -50,7 +51,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
         <div
           key={i}
           className="h-0.5 flex-1 rounded-full transition-all duration-500"
-          style={{ background: i < step ? '#00e676' : 'rgba(255,255,255,0.1)' }}
+          style={{ background: i < step ? '#00e676' : 'var(--bg-item-hover)' }}
         />
       ))}
     </div>
@@ -62,19 +63,19 @@ function SInput({ label, required, hint, children }: {
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-bold uppercase tracking-wider" style={{ color: '#4a5380' }}>
+      <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
         {label}{required && <span style={{ color: '#f44336' }}> *</span>}
       </label>
       {children}
-      {hint && <p className="text-xs" style={{ color: '#4a5380' }}>{hint}</p>}
+      {hint && <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{hint}</p>}
     </div>
   );
 }
 
 const IS: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.05)',
-  border: '1.5px solid rgba(255,255,255,0.1)',
-  color: '#fff',
+  background: 'var(--bg-input)',
+  border: '1.5px solid var(--border-medium)',
+  color: 'var(--text-primary)',
   borderRadius: 14,
   caretColor: '#00e676',
 };
@@ -179,7 +180,7 @@ export default function CreateMarketPage() {
   // ── Auth loading ───────────────────────────────────────────────────────────
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0f1117' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
         <div className="w-7 h-7 rounded-full border-2 animate-spin" style={{ borderColor: '#00e676', borderTopColor: 'transparent' }} />
       </div>
     );
@@ -188,21 +189,21 @@ export default function CreateMarketPage() {
   // ── Succès (retour Stripe) ──────────────────────────────────────────────────
   if (submitted) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12" style={{ background: '#0f1117' }}>
+      <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12" style={{ background: 'var(--bg-primary)' }}>
         <div
           className="w-20 h-20 rounded-full flex items-center justify-center text-4xl mb-6"
           style={{ background: 'rgba(0,230,118,0.1)', border: '2px solid rgba(0,230,118,0.3)' }}
         >
           🎉
         </div>
-        <h1 className="text-3xl font-black text-center mb-3" style={{ color: '#fff' }}>
+        <h1 className="text-3xl font-black text-center mb-3" style={{ color: 'var(--text-primary)' }}>
           Paiement confirmé !
         </h1>
-        <p className="text-sm text-center mb-2 max-w-sm" style={{ color: '#6b7db3' }}>
+        <p className="text-sm text-center mb-2 max-w-sm" style={{ color: 'var(--text-secondary)' }}>
           Ton marché a été soumis pour validation. L&apos;équipe FlatEarth va le vérifier sous{' '}
           <strong style={{ color: '#00e676' }}>24 à 48h</strong>.
         </p>
-        <p className="text-xs text-center mb-8" style={{ color: '#4a5380' }}>
+        <p className="text-xs text-center mb-8" style={{ color: 'var(--text-muted)' }}>
           Tu seras notifié dès qu&apos;il sera approuvé et visible publiquement.
         </p>
 
@@ -234,8 +235,8 @@ export default function CreateMarketPage() {
           )}
           <button
             onClick={() => router.push('/')}
-            className="w-full py-3.5 rounded-2xl text-sm font-semibold transition-all hover:bg-white/5"
-            style={{ background: 'rgba(255,255,255,0.04)', color: '#6b7db3', border: '1px solid rgba(255,255,255,0.08)' }}
+            className="w-full py-3.5 rounded-2xl text-sm font-semibold transition-all"
+            style={{ background: 'var(--bg-item)', color: 'var(--text-secondary)', border: '1px solid var(--border-medium)' }}
           >
             Retour aux marchés
           </button>
@@ -245,14 +246,14 @@ export default function CreateMarketPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#0f1117' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg-primary)' }}>
 
       {/* ── Top bar ─────────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between px-6 py-4 shrink-0">
         <button
           onClick={step > 1 ? () => setStep(s => s - 1) : () => router.push('/')}
-          className="p-2 rounded-xl transition-all hover:bg-white/5"
-          style={{ color: '#6b7db3' }}
+          className="p-2 rounded-xl transition-all"
+          style={{ color: 'var(--text-secondary)' }}
         >
           <ArrowLeft size={18} />
         </button>
@@ -264,7 +265,7 @@ export default function CreateMarketPage() {
           ))}
         </div>
 
-        <Link href="/" className="p-2 rounded-xl transition-all hover:bg-white/5" style={{ color: '#6b7db3' }}>
+        <Link href="/" className="p-2 rounded-xl transition-all" style={{ color: 'var(--text-secondary)' }}>
           <X size={18} />
         </Link>
       </div>
@@ -299,10 +300,10 @@ export default function CreateMarketPage() {
                 <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#00e676' }}>
                   Étape 1 sur 4
                 </p>
-                <h1 className="text-3xl font-black" style={{ color: '#fff' }}>
+                <h1 className="text-3xl font-black" style={{ color: 'var(--text-primary)' }}>
                   Quelle est ta question ?
                 </h1>
-                <p className="text-sm mt-2" style={{ color: '#6b7db3' }}>
+                <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
                   Formule ton pari comme une question avec une réponse vérifiable.
                 </p>
               </div>
@@ -318,7 +319,7 @@ export default function CreateMarketPage() {
                   style={{ ...IS, lineHeight: 1.6 }}
                 />
                 <div className="flex justify-end mt-1">
-                  <span className="text-xs" style={{ color: title.length < 10 ? '#f44336' : '#4a5380' }}>
+                  <span className="text-xs" style={{ color: title.length < 10 ? '#f44336' : 'var(--text-muted)' }}>
                     {title.length} / 10 min
                   </span>
                 </div>
@@ -350,24 +351,24 @@ export default function CreateMarketPage() {
               {/* ── Checklist Google-isable ────────────────────────────────── */}
               <div
                 className="rounded-2xl overflow-hidden"
-                style={{ border: '1.5px solid rgba(255,255,255,0.1)' }}
+                style={{ border: '1.5px solid var(--border-medium)' }}
               >
                 <div
                   className="flex items-center gap-3 px-4 py-3.5"
-                  style={{ background: 'rgba(0,230,118,0.08)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+                  style={{ background: 'rgba(0,230,118,0.08)', borderBottom: '1px solid var(--border)' }}
                 >
                   <Sparkles size={15} style={{ color: '#00e676' }} />
                   <div>
-                    <p className="text-sm font-black" style={{ color: '#fff' }}>Mon pari est Google-isable</p>
-                    <p className="text-xs mt-0.5" style={{ color: '#4a5380' }}>
+                    <p className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Mon pari est Google-isable</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                       Coche les 4 critères pour pouvoir continuer
                     </p>
                   </div>
                   <span
                     className="ml-auto text-xs font-black px-2 py-0.5 rounded-full"
                     style={{
-                      background: allChecked ? 'rgba(0,230,118,0.15)' : 'rgba(255,255,255,0.07)',
-                      color: allChecked ? '#00e676' : '#4a5380',
+                      background: allChecked ? 'rgba(0,230,118,0.15)' : 'var(--bg-item-hover)',
+                      color: allChecked ? '#00e676' : 'var(--text-muted)',
                     }}
                   >
                     {Object.values(checks).filter(Boolean).length}/4
@@ -381,29 +382,29 @@ export default function CreateMarketPage() {
                       key={id}
                       type="button"
                       onClick={() => setChecks(prev => ({ ...prev, [id]: !prev[id] }))}
-                      className="w-full flex items-start gap-3.5 px-4 py-3.5 text-left transition-all hover:bg-white/[0.03]"
+                      className="w-full flex items-start gap-3.5 px-4 py-3.5 text-left transition-all"
                       style={{
                         background: checked ? 'rgba(0,230,118,0.04)' : 'transparent',
-                        borderBottom: '1px solid rgba(255,255,255,0.05)',
+                        borderBottom: '1px solid var(--border-light)',
                       }}
                     >
                       <div
                         className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 transition-all"
                         style={{
-                          background: checked ? '#00e676' : 'rgba(255,255,255,0.07)',
-                          border: `1.5px solid ${checked ? '#00e676' : 'rgba(255,255,255,0.15)'}`,
+                          background: checked ? '#00e676' : 'var(--bg-item-hover)',
+                          border: `1.5px solid ${checked ? '#00e676' : 'var(--border-medium)'}`,
                         }}
                       >
                         {checked && <Check size={11} color="#000" strokeWidth={3} />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span style={{ color: checked ? '#00e676' : '#4a5380' }}>{icon}</span>
-                          <p className="text-sm font-semibold" style={{ color: checked ? '#e0e6ff' : '#8d97b8' }}>
+                          <span style={{ color: checked ? '#00e676' : 'var(--text-muted)' }}>{icon}</span>
+                          <p className="text-sm font-semibold" style={{ color: checked ? 'var(--text-bright)' : 'var(--text-secondary)' }}>
                             {label}
                           </p>
                         </div>
-                        <p className="text-xs mt-0.5 pl-6" style={{ color: '#4a5380' }}>{desc}</p>
+                        <p className="text-xs mt-0.5 pl-6" style={{ color: 'var(--text-muted)' }}>{desc}</p>
                       </div>
                     </button>
                   );
@@ -415,8 +416,8 @@ export default function CreateMarketPage() {
                 disabled={!canProceed1}
                 className="w-full py-4 rounded-2xl text-base font-black transition-all hover:brightness-110 active:scale-[0.98]"
                 style={{
-                  background: canProceed1 ? '#00e676' : 'rgba(255,255,255,0.07)',
-                  color: canProceed1 ? '#000' : '#4a5380',
+                  background: canProceed1 ? '#00e676' : 'var(--bg-item-hover)',
+                  color: canProceed1 ? '#000' : 'var(--text-muted)',
                 }}
               >
                 Continuer →
@@ -431,10 +432,10 @@ export default function CreateMarketPage() {
                 <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#00e676' }}>
                   Étape 2 sur 4
                 </p>
-                <h1 className="text-3xl font-black" style={{ color: '#fff' }}>
+                <h1 className="text-3xl font-black" style={{ color: 'var(--text-primary)' }}>
                   Quelles sont les réponses ?
                 </h1>
-                <p className="text-sm mt-2" style={{ color: '#6b7db3' }}>
+                <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
                   Définis les options sur lesquelles les gens vont parier. Les probabilités doivent totaliser 100%.
                 </p>
               </div>
@@ -467,7 +468,7 @@ export default function CreateMarketPage() {
                     <div
                       key={i}
                       className="rounded-2xl p-4"
-                      style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)' }}
+                      style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
                     >
                       <div className="flex items-center gap-3 mb-3">
                         <div
@@ -495,18 +496,18 @@ export default function CreateMarketPage() {
                             className="w-14 px-2 py-2.5 text-sm text-center font-black outline-none rounded-xl"
                             style={{ ...IS, color }}
                           />
-                          <span className="text-xs font-bold" style={{ color: '#4a5380' }}>%</span>
+                          <span className="text-xs font-bold" style={{ color: 'var(--text-muted)' }}>%</span>
                         </div>
                         <button
                           type="button" onClick={() => removeOption(i)}
                           disabled={options.length <= 2}
                           className="p-1.5 rounded-lg transition-all hover:bg-red-500/10 disabled:opacity-20 shrink-0"
-                          style={{ color: '#6b7db3' }}
+                          style={{ color: 'var(--text-secondary)' }}
                         >
                           <Trash2 size={13} />
                         </button>
                       </div>
-                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--bg-item-hover)' }}>
                         <div
                           className="h-full rounded-full transition-all duration-300"
                           style={{ width: `${opt.probability}%`, background: color, boxShadow: `0 0 8px ${color}60` }}
@@ -520,8 +521,8 @@ export default function CreateMarketPage() {
               {options.length < 6 && (
                 <button
                   type="button" onClick={addOption}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-sm font-semibold transition-all hover:bg-white/5"
-                  style={{ border: '1.5px dashed rgba(255,255,255,0.12)', color: '#6b7db3' }}
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-sm font-semibold transition-all"
+                  style={{ border: '1.5px dashed var(--border-medium)', color: 'var(--text-secondary)' }}
                 >
                   <Plus size={15} />
                   Ajouter une option ({options.length}/6)
@@ -533,8 +534,8 @@ export default function CreateMarketPage() {
                 disabled={!canProceed2}
                 className="w-full py-4 rounded-2xl text-base font-black transition-all hover:brightness-110 active:scale-[0.98]"
                 style={{
-                  background: canProceed2 ? '#00e676' : 'rgba(255,255,255,0.07)',
-                  color: canProceed2 ? '#000' : '#4a5380',
+                  background: canProceed2 ? '#00e676' : 'var(--bg-item-hover)',
+                  color: canProceed2 ? '#000' : 'var(--text-muted)',
                 }}
               >
                 Continuer →
@@ -549,10 +550,10 @@ export default function CreateMarketPage() {
                 <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#00e676' }}>
                   Étape 3 sur 4
                 </p>
-                <h1 className="text-3xl font-black" style={{ color: '#fff' }}>
+                <h1 className="text-3xl font-black" style={{ color: 'var(--text-primary)' }}>
                   Configuration
                 </h1>
-                <p className="text-sm mt-2" style={{ color: '#6b7db3' }}>
+                <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
                   Catégorie, date de clôture et tes frais de créateur.
                 </p>
               </div>
@@ -561,8 +562,8 @@ export default function CreateMarketPage() {
               <SInput label="Catégorie" required>
                 <div className="grid gap-2 mt-1" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))' }}>
                   {CATEGORIES.map(([slug, label]) => {
-                    const icon = CATEGORY_ICONS[slug];
                     const active = category === slug;
+                    const icolor = CATEGORY_COLORS[slug] ?? '#8d97b8';
                     return (
                       <button
                         key={slug}
@@ -570,12 +571,12 @@ export default function CreateMarketPage() {
                         onClick={() => { setCategory(slug); setSubcategory(''); }}
                         className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-left transition-all hover:brightness-110"
                         style={{
-                          background: active ? 'rgba(0,230,118,0.12)' : 'rgba(255,255,255,0.04)',
-                          border: `1.5px solid ${active ? 'rgba(0,230,118,0.4)' : 'rgba(255,255,255,0.08)'}`,
-                          color: active ? '#00e676' : '#6b7db3',
+                          background: active ? `${icolor}18` : 'var(--bg-item)',
+                          border: `1.5px solid ${active ? icolor + '55' : 'var(--border-medium)'}`,
+                          color: active ? icolor : 'var(--text-secondary)',
                         }}
                       >
-                        <span>{icon}</span>
+                        <CategoryIcon slug={slug} size={14} strokeWidth={2} />
                         <span className="truncate">{label}</span>
                       </button>
                     );
@@ -595,11 +596,11 @@ export default function CreateMarketPage() {
               </SInput>
 
               {/* Frais créateur */}
-              <div className="rounded-2xl p-4" style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <div className="rounded-2xl p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <p className="text-sm font-black" style={{ color: '#fff' }}>Tes frais de créateur</p>
-                    <p className="text-xs mt-0.5" style={{ color: '#4a5380' }}>
+                    <p className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Tes frais de créateur</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                       Tu recevras {creatorFeePercent}% de chaque mise placée sur ton marché
                     </p>
                   </div>
@@ -611,7 +612,7 @@ export default function CreateMarketPage() {
                   onChange={e => setCreatorFeePercent(parseFloat(e.target.value))}
                   className="w-full accent-green-400"
                 />
-                <div className="flex justify-between text-xs mt-1" style={{ color: '#4a5380' }}>
+                <div className="flex justify-between text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
                   <span>0% (gratuit)</span>
                   <span>15% (maximum)</span>
                 </div>
@@ -634,8 +635,8 @@ export default function CreateMarketPage() {
                 disabled={!canProceed3}
                 className="w-full py-4 rounded-2xl text-base font-black transition-all hover:brightness-110 active:scale-[0.98]"
                 style={{
-                  background: canProceed3 ? '#00e676' : 'rgba(255,255,255,0.07)',
-                  color: canProceed3 ? '#000' : '#4a5380',
+                  background: canProceed3 ? '#00e676' : 'var(--bg-item-hover)',
+                  color: canProceed3 ? '#000' : 'var(--text-muted)',
                 }}
               >
                 Vérifier mon pari →
@@ -650,39 +651,40 @@ export default function CreateMarketPage() {
                 <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#00e676' }}>
                   Étape 4 sur 4
                 </p>
-                <h1 className="text-3xl font-black" style={{ color: '#fff' }}>
+                <h1 className="text-3xl font-black" style={{ color: 'var(--text-primary)' }}>
                   Récapitulatif
                 </h1>
-                <p className="text-sm mt-2" style={{ color: '#6b7db3' }}>
+                <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
                   Vérifie tout avant de payer. Tu ne pourras plus modifier après.
                 </p>
               </div>
 
               {/* Card récap */}
-              <div className="rounded-2xl overflow-hidden" style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
                 {/* Header */}
-                <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+                <div className="px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.07)', color: '#6b7db3' }}>
-                      {CATEGORY_ICONS[category as MarketCategory]} {CATEGORY_LABELS[category as MarketCategory]}
+                    <span className="flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'var(--bg-item-hover)', color: 'var(--text-secondary)' }}>
+                      <CategoryIcon slug={category} size={11} strokeWidth={2} />
+                      {CATEGORY_LABELS[category as MarketCategory]}
                     </span>
                     <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(0,230,118,0.1)', color: '#00e676' }}>
                       ✓ Google-isable
                     </span>
                   </div>
-                  <p className="text-base font-black leading-snug" style={{ color: '#fff' }}>{title}</p>
-                  {description && <p className="text-sm mt-1.5 line-clamp-2" style={{ color: '#6b7db3' }}>{description}</p>}
+                  <p className="text-base font-black leading-snug" style={{ color: 'var(--text-primary)' }}>{title}</p>
+                  {description && <p className="text-sm mt-1.5 line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{description}</p>}
                 </div>
 
                 {/* Options */}
-                <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-                  <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: '#4a5380' }}>Options</p>
+                <div className="px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+                  <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>Options</p>
                   {options.map((o, i) => {
                     const color = OPTION_COLORS[i] ?? '#aaa';
                     return (
                       <div key={i} className="flex items-center gap-3 mb-2">
                         <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: `${color}22`, color }}>{i + 1}</div>
-                        <span className="flex-1 text-sm font-semibold" style={{ color: '#e0e6ff' }}>{o.label}</span>
+                        <span className="flex-1 text-sm font-semibold" style={{ color: 'var(--text-bright)' }}>{o.label}</span>
                         <span className="text-sm font-black" style={{ color }}>{o.probability}%</span>
                       </div>
                     );
@@ -695,9 +697,9 @@ export default function CreateMarketPage() {
                     { label: 'Clôture', value: new Date(endsAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) },
                     { label: 'Frais créateur', value: `${creatorFeePercent}%` },
                   ].map(({ label, value }, i) => (
-                    <div key={label} className="px-5 py-3.5" style={{ borderTop: '1px solid rgba(255,255,255,0.07)', borderRight: i === 0 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
-                      <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: '#4a5380' }}>{label}</p>
-                      <p className="text-sm font-bold" style={{ color: '#c0c8e8' }}>{value}</p>
+                    <div key={label} className="px-5 py-3.5" style={{ borderTop: '1px solid var(--border)', borderRight: i === 0 ? '1px solid var(--border)' : 'none' }}>
+                      <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-muted)' }}>{label}</p>
+                      <p className="text-sm font-bold" style={{ color: 'var(--text-bright)' }}>{value}</p>
                     </div>
                   ))}
                 </div>
@@ -726,7 +728,7 @@ export default function CreateMarketPage() {
                 style={{ background: 'rgba(79,195,247,0.07)', border: '1px solid rgba(79,195,247,0.2)' }}
               >
                 <AlertTriangle size={15} style={{ color: '#4fc3f7', flexShrink: 0, marginTop: 1 }} />
-                <p className="text-xs leading-relaxed" style={{ color: '#6b7db3' }}>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                   Ton pari sera relu par l&apos;équipe FlatEarth avant publication. Délai :{' '}
                   <strong style={{ color: '#4fc3f7' }}>24–48h</strong>. Les {CREATION_COST_EUR}€ sont débités immédiatement et ne sont pas remboursables si le pari est rejeté.
                 </p>
@@ -743,13 +745,13 @@ export default function CreateMarketPage() {
                 disabled={submitting}
                 className="w-full py-4 rounded-2xl text-base font-black flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
                 style={{
-                  background: submitting ? 'rgba(255,255,255,0.07)' : 'linear-gradient(135deg, #00e676, #00b8d4)',
-                  color: submitting ? '#4a5380' : '#000',
+                  background: submitting ? 'var(--bg-item-hover)' : 'linear-gradient(135deg, #00e676, #00b8d4)',
+                  color: submitting ? 'var(--text-muted)' : '#000',
                 }}
               >
                 {submitting ? (
                   <>
-                    <div className="w-4 h-4 rounded-full border-2 animate-spin" style={{ borderColor: '#4a5380', borderTopColor: 'transparent' }} />
+                    <div className="w-4 h-4 rounded-full border-2 animate-spin" style={{ borderColor: 'var(--text-muted)', borderTopColor: 'transparent' }} />
                     Préparation du paiement…
                   </>
                 ) : (
@@ -760,9 +762,9 @@ export default function CreateMarketPage() {
                 )}
               </button>
 
-              <p className="text-xs text-center" style={{ color: '#4a5380' }}>
+              <p className="text-xs text-center" style={{ color: 'var(--text-muted)' }}>
                 En payant, tu acceptes les{' '}
-                <span style={{ color: '#6b7db3', cursor: 'pointer' }}>conditions d&apos;utilisation</span>{' '}
+                <span style={{ color: 'var(--text-secondary)', cursor: 'pointer' }}>conditions d&apos;utilisation</span>{' '}
                 de FlatEarth. Paiement sécurisé par Stripe.
               </p>
             </div>

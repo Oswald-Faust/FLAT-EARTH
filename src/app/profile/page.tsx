@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import Header from '@/components/layout/Header';
 import { formatCoins } from '@/lib/utils';
-import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/types';
+import { CATEGORY_LABELS } from '@/types';
+import CategoryIcon from '@/components/ui/CategoryIcon';
 import {
   Settings, LogOut, ArrowDownToLine, ArrowUpFromLine,
   TrendingUp, Trophy, Zap, Target,
@@ -56,13 +57,13 @@ function StatCard({ icon, label, value, color = '#8d97b8' }: {
   return (
     <div
       className="rounded-2xl p-4 flex flex-col gap-2"
-      style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)' }}
+      style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
     >
-      <div className="flex items-center gap-2 text-xs" style={{ color: '#4a5380' }}>
+      <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
         <span style={{ color }}>{icon}</span>
         {label}
       </div>
-      <span className="text-xl font-black" style={{ color: '#fff' }}>{value}</span>
+      <span className="text-xl font-black" style={{ color: 'var(--text-primary)' }}>{value}</span>
     </div>
   );
 }
@@ -90,7 +91,7 @@ export default function ProfilePage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex flex-col min-h-screen" style={{ background: '#0f1117' }}>
+      <div className="flex flex-col min-h-screen" style={{ background: 'var(--bg-primary)' }}>
         <Header isLoggedIn={!!session} coins={0} liveCount={0} />
         <div className="flex-1 flex items-center justify-center">
           <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: '#00e676', borderTopColor: 'transparent' }} />
@@ -108,7 +109,7 @@ export default function ProfilePage() {
   const closedBets = recentBets.filter(b => b.status !== 'pending');
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ background: '#0f1117' }}>
+    <div className="flex flex-col min-h-screen" style={{ background: 'var(--bg-primary)' }}>
       <Header isLoggedIn={true} coins={user.coins} liveCount={0} />
 
       <div className="flex-1 overflow-y-auto">
@@ -120,7 +121,7 @@ export default function ProfilePage() {
             {/* Left: Profile card */}
             <div
               className="md:col-span-3 rounded-2xl p-5"
-              style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)' }}
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
             >
               <div className="flex items-start gap-4 mb-5">
                 {/* Avatar gradient (Polymarket style) */}
@@ -132,18 +133,18 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h1 className="text-xl font-black" style={{ color: '#fff' }}>{user.username}</h1>
+                    <h1 className="text-xl font-black" style={{ color: 'var(--text-primary)' }}>{user.username}</h1>
                     {user.role === 'admin' && (
                       <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,215,0,0.15)', color: '#ffd700' }}>Admin</span>
                     )}
                   </div>
-                  <p className="text-xs mt-1" style={{ color: '#4a5380' }}>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
                     Inscrit {joinDate} · {stats.totalBets} prédictions
                   </p>
                 </div>
                 {/* Action buttons */}
                 <div className="flex items-center gap-1 shrink-0">
-                  <Link href="/settings" className="p-2 rounded-xl hover:bg-white/5 transition-all" style={{ color: '#4a5380' }}>
+                  <Link href="/settings" className="p-2 rounded-xl transition-all" style={{ color: 'var(--text-muted)' }}>
                     <Settings size={15} />
                   </Link>
                   <button
@@ -164,8 +165,8 @@ export default function ProfilePage() {
                   { label: 'Prédictions', value: stats.totalBets },
                 ].map(({ label, value }) => (
                   <div key={label}>
-                    <p className="text-lg font-black" style={{ color: '#fff' }}>{value}</p>
-                    <p className="text-xs mt-0.5" style={{ color: '#4a5380' }}>{label}</p>
+                    <p className="text-lg font-black" style={{ color: 'var(--text-primary)' }}>{value}</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{label}</p>
                   </div>
                 ))}
               </div>
@@ -182,7 +183,7 @@ export default function ProfilePage() {
                 </Link>
                 <button
                   className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:bg-white/8"
-                  style={{ background: 'rgba(255,255,255,0.05)', color: '#8d97b8', border: '1px solid rgba(255,255,255,0.1)' }}
+                  style={{ background: 'var(--bg-item)', color: 'var(--text-secondary)', border: '1px solid var(--border-medium)' }}
                 >
                   <ArrowUpFromLine size={14} />
                   Retirer
@@ -195,22 +196,22 @@ export default function ProfilePage() {
               {/* Coins balance */}
               <div
                 className="rounded-2xl p-5 flex flex-col justify-between"
-                style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)', flex: 1 }}
+                style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', flex: 1 }}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#4a5380' }}>Balance</span>
-                  <span className="text-xs" style={{ color: '#4a5380' }}>coins</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Balance</span>
+                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>coins</span>
                 </div>
                 <div>
                   <p className="text-3xl font-black" style={{ color: '#ffd700' }}>
                     🪙 {user.coins.toLocaleString()}
                   </p>
-                  <p className="text-xs mt-1" style={{ color: '#4a5380' }}>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
                     {stats.activeBets} paris en cours
                   </p>
                 </div>
                 {/* Mini bar chart placeholder */}
-                <div className="mt-3 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                <div className="mt-3 h-1 rounded-full overflow-hidden" style={{ background: 'var(--bg-item-hover)' }}>
                   <div className="h-full rounded-full" style={{ width: `${Math.min(100, (user.coins / 1000) * 100)}%`, background: 'linear-gradient(90deg, #ffd700, #00e676)' }} />
                 </div>
               </div>
@@ -218,13 +219,13 @@ export default function ProfilePage() {
               {/* Win rate */}
               <div
                 className="rounded-2xl p-5"
-                style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)' }}
+                style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
               >
-                <span className="text-xs font-semibold uppercase tracking-wider block mb-2" style={{ color: '#4a5380' }}>Taux de victoire</span>
+                <span className="text-xs font-semibold uppercase tracking-wider block mb-2" style={{ color: 'var(--text-muted)' }}>Taux de victoire</span>
                 <p className="text-3xl font-black" style={{ color: stats.winRate >= 50 ? '#00e676' : '#f44336' }}>
                   {stats.winRate}%
                 </p>
-                <p className="text-xs mt-1" style={{ color: '#4a5380' }}>
+                <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
                   {stats.wonBets}W · {stats.lostBets}L
                 </p>
               </div>
@@ -240,16 +241,16 @@ export default function ProfilePage() {
           </div>
 
           {/* ── Positions / Activity tabs ─────────────────────────────── */}
-          <div className="rounded-2xl overflow-hidden" style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
 
             {/* Tabs */}
-            <div className="flex items-center gap-1 px-4 pt-4 mb-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+            <div className="flex items-center gap-1 px-4 pt-4 mb-0" style={{ borderBottom: '1px solid var(--border)' }}>
               {(['positions', 'activity'] as const).map(t => (
                 <button
                   key={t}
                   onClick={() => setTab(t)}
                   className="px-4 py-2.5 text-sm font-bold transition-all relative"
-                  style={{ color: tab === t ? '#fff' : '#4a5380' }}
+                  style={{ color: tab === t ? 'var(--text-primary)' : 'var(--text-muted)' }}
                 >
                   {t === 'positions' ? 'Positions' : 'Activité'}
                   {tab === t && (
@@ -273,8 +274,8 @@ export default function ProfilePage() {
                           key={label}
                           className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
                           style={{
-                            background: i === 0 ? 'rgba(255,255,255,0.1)' : 'transparent',
-                            color: i === 0 ? '#fff' : '#4a5380',
+                            background: i === 0 ? 'var(--bg-item-hover)' : 'transparent',
+                            color: i === 0 ? 'var(--text-primary)' : 'var(--text-muted)',
                           }}
                         >
                           {label}
@@ -284,7 +285,7 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Table header */}
-                  <div className="grid text-xs font-semibold uppercase tracking-wider pb-2 px-2" style={{ gridTemplateColumns: '1fr 80px 80px 80px', color: '#4a5380', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div className="grid text-xs font-semibold uppercase tracking-wider pb-2 px-2" style={{ gridTemplateColumns: '1fr 80px 80px 80px', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-light)' }}>
                     <span>Marché</span>
                     <span className="text-right">Mise</span>
                     <span className="text-right">Gain pot.</span>
@@ -294,7 +295,7 @@ export default function ProfilePage() {
                   {activeBets.length === 0 ? (
                     <div className="text-center py-12">
                       <p className="text-3xl mb-3">🎯</p>
-                      <p className="text-sm" style={{ color: '#4a5380' }}>Aucune position active</p>
+                      <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Aucune position active</p>
                       <Link href="/" className="mt-3 inline-block text-xs font-bold" style={{ color: '#00e676' }}>
                         Explorer les marchés →
                       </Link>
@@ -305,23 +306,24 @@ export default function ProfilePage() {
                         <div
                           key={bet._id}
                           className="grid items-center px-2 py-3.5 transition-all hover:bg-white/[0.02]"
-                          style={{ gridTemplateColumns: '1fr 80px 80px 80px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+                          style={{ gridTemplateColumns: '1fr 80px 80px 80px', borderBottom: '1px solid var(--border-light)' }}
                         >
                           <div className="min-w-0 pr-3">
                             {bet.marketId ? (
-                              <Link href={`/market/${bet.marketId._id}`} className="text-sm font-medium leading-snug hover:text-white transition-colors line-clamp-2" style={{ color: '#c0c8e8', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                              <Link href={`/market/${bet.marketId._id}`} className="text-sm font-medium leading-snug transition-colors line-clamp-2" style={{ color: 'var(--text-bright)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                                 {bet.marketId.title}
                               </Link>
                             ) : (
-                              <p className="text-sm" style={{ color: '#4a5380' }}>Marché supprimé</p>
+                              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Marché supprimé</p>
                             )}
                             {bet.marketId && (
-                              <p className="text-xs mt-0.5" style={{ color: '#4a5380' }}>
-                                {CATEGORY_ICONS[bet.marketId.category as keyof typeof CATEGORY_ICONS]} {CATEGORY_LABELS[bet.marketId.category as keyof typeof CATEGORY_LABELS]}
+                              <p className="flex items-center gap-1 text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                                <CategoryIcon slug={bet.marketId.category} size={11} strokeWidth={2} />
+                                {CATEGORY_LABELS[bet.marketId.category as keyof typeof CATEGORY_LABELS]}
                               </p>
                             )}
                           </div>
-                          <p className="text-sm font-bold text-right" style={{ color: '#fff' }}>
+                          <p className="text-sm font-bold text-right" style={{ color: 'var(--text-primary)' }}>
                             🪙 {bet.amount}
                           </p>
                           <p className="text-sm font-bold text-right" style={{ color: '#00e676' }}>
@@ -343,7 +345,7 @@ export default function ProfilePage() {
                   {recentBets.length === 0 ? (
                     <div className="text-center py-12">
                       <p className="text-3xl mb-3">📊</p>
-                      <p className="text-sm" style={{ color: '#4a5380' }}>Aucune activité récente</p>
+                      <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Aucune activité récente</p>
                     </div>
                   ) : (
                     <div className="flex flex-col">
@@ -351,7 +353,7 @@ export default function ProfilePage() {
                         <div
                           key={bet._id}
                           className="flex items-center gap-3 py-3.5 transition-all hover:bg-white/[0.02]"
-                          style={{ borderBottom: i < recentBets.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
+                          style={{ borderBottom: i < recentBets.length - 1 ? '1px solid var(--border-light)' : 'none' }}
                         >
                           {/* Icon */}
                           <div
@@ -363,10 +365,10 @@ export default function ProfilePage() {
                             {bet.status === 'won' ? '✅' : bet.status === 'lost' ? '❌' : '🎯'}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium leading-snug" style={{ color: '#c0c8e8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <p className="text-sm font-medium leading-snug" style={{ color: 'var(--text-bright)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {bet.marketId?.title ?? 'Marché supprimé'}
                             </p>
-                            <p className="text-xs mt-0.5" style={{ color: '#4a5380' }}>
+                            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                               {new Date(bet.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                             </p>
                           </div>

@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { Clock, TrendingUp, Share2, Bookmark } from 'lucide-react';
-import { IMarket, CATEGORY_LABELS, CATEGORY_ICONS } from '@/types';
+import { IMarket, CATEGORY_LABELS } from '@/types';
 import { BADGE_COLORS } from '@/lib/demo-data';
 import { formatTimeLeft, formatCoins } from '@/lib/utils';
 import { useTheme } from '@/context/ThemeContext';
+import CategoryIcon, { CATEGORY_COLORS } from '@/components/ui/CategoryIcon';
 
 interface MarketCardProps {
   market: IMarket;
@@ -67,8 +68,8 @@ function CompactCard({ market }: { market: IMarket }) {
 function LargeCard({ market }: { market: IMarket }) {
   const { theme } = useTheme();
   const isLive = market.status === 'live';
-  const icon = CATEGORY_ICONS[market.category];
   const timeLeft = formatTimeLeft(market.endsAt);
+  const iconColor = CATEGORY_COLORS[market.category] ?? '#8d97b8';
 
   // Gradients dark mode
   const darkGradients: Partial<Record<string, string>> = {
@@ -99,8 +100,12 @@ function LargeCard({ market }: { market: IMarket }) {
       >
         {/* Banner area */}
         <div className="relative flex items-center justify-center" style={{ height: 120, overflow: 'hidden' }}>
-          <span style={{ fontSize: 64, opacity: 0.18, filter: 'blur(2px)' }}>{icon}</span>
-          <span className="absolute" style={{ fontSize: 40, opacity: 0.7 }}>{icon}</span>
+          <div style={{ opacity: 0.12, filter: 'blur(4px)', color: iconColor }}>
+            <CategoryIcon slug={market.category} size={88} strokeWidth={1} />
+          </div>
+          <div className="absolute" style={{ color: iconColor, opacity: 0.8 }}>
+            <CategoryIcon slug={market.category} size={42} strokeWidth={1.5} />
+          </div>
           {isLive && (
             <div className="absolute top-3 right-3">
               <LiveBadge />
@@ -159,7 +164,7 @@ export default function MarketCard({ market, variant = 'default' }: MarketCardPr
 
   const isLive = market.status === 'live';
   const timeLeft = formatTimeLeft(market.endsAt);
-  const icon = CATEGORY_ICONS[market.category];
+  const iconColor = CATEGORY_COLORS[market.category] ?? '#8d97b8';
 
   return (
     <Link href={`/market/${market._id}`} className="block h-full">
@@ -170,10 +175,10 @@ export default function MarketCard({ market, variant = 'default' }: MarketCardPr
         {/* Header: icon + category + live badge */}
         <div className="flex items-start gap-2.5 mb-3">
           <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0"
-            style={{ background: 'var(--bg-item-hover)', border: '1px solid var(--border)' }}
+            className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+            style={{ background: `${iconColor}14`, border: `1px solid ${iconColor}30`, color: iconColor }}
           >
-            {icon}
+            <CategoryIcon slug={market.category} size={15} strokeWidth={2} />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold uppercase tracking-widest truncate" style={{ color: 'var(--text-muted)', fontSize: 9 }}>

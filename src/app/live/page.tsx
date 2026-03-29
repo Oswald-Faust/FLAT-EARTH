@@ -4,27 +4,28 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import { useSession } from 'next-auth/react';
-import { IMarket, CATEGORY_LABELS, CATEGORY_ICONS } from '@/types';
+import { IMarket, CATEGORY_LABELS } from '@/types';
 import { formatCoins } from '@/lib/utils';
 import { Settings } from 'lucide-react';
+import CategoryIcon, { CATEGORY_COLORS } from '@/components/ui/CategoryIcon';
 
 // ─── Catégories sidebar ──────────────────────────────────────────────────────
-const SIDEBAR_CATS: { key: string; label: string; icon: string }[] = [
-  { key: 'all',         label: 'Tous',          icon: '🌐' },
-  { key: 'sport',       label: 'Sport',         icon: '⚽' },
-  { key: 'politique',   label: 'Politique',     icon: '🏛️' },
-  { key: 'crypto',      label: 'Crypto',        icon: '₿'  },
-  { key: 'esport',      label: 'eSport',        icon: '🎮' },
-  { key: 'economie',    label: 'Économie',      icon: '📈' },
-  { key: 'geopolitique',label: 'Géopolitique',  icon: '🌍' },
-  { key: 'tech',        label: 'Tech & Science',icon: '🔬' },
-  { key: 'pop-culture', label: 'Culture',       icon: '🎬' },
-  { key: 'actualite',   label: 'Actualité',     icon: '📰' },
-  { key: 'mentions',    label: 'Mentions',      icon: '💬' },
-  { key: 'finance',     label: 'Finance',       icon: '💰' },
-  { key: 'meteo',       label: 'Météo',         icon: '🌤️' },
-  { key: 'tele-realite',label: 'Télé-réalité',  icon: '📺' },
-  { key: 'climat',      label: 'Climat',        icon: '🌱' },
+const SIDEBAR_CATS: { key: string; label: string }[] = [
+  { key: 'all',         label: 'Tous'           },
+  { key: 'sport',       label: 'Sport'          },
+  { key: 'politique',   label: 'Politique'      },
+  { key: 'crypto',      label: 'Crypto'         },
+  { key: 'esport',      label: 'eSport'         },
+  { key: 'economie',    label: 'Économie'       },
+  { key: 'geopolitique',label: 'Géopolitique'   },
+  { key: 'tech',        label: 'Tech & Science' },
+  { key: 'pop-culture', label: 'Culture'        },
+  { key: 'actualite',   label: 'Actualité'      },
+  { key: 'mentions',    label: 'Mentions'       },
+  { key: 'finance',     label: 'Finance'        },
+  { key: 'meteo',       label: 'Météo'          },
+  { key: 'tele-realite',label: 'Télé-réalité'   },
+  { key: 'climat',      label: 'Climat'         },
 ];
 
 // ─── Demo live markets (fallback si DB vide) ─────────────────────────────────
@@ -111,9 +112,9 @@ const DEMO_LIVE: Partial<IMarket>[] = [
 
 // ─── Live Market Card ─────────────────────────────────────────────────────────
 function LiveCard({ market }: { market: Partial<IMarket> }) {
-  const cat      = (market.category ?? 'sport') as keyof typeof CATEGORY_ICONS;
-  const icon     = CATEGORY_ICONS[cat] ?? '🌐';
-  const catLabel = CATEGORY_LABELS[cat] ?? market.category;
+  const cat      = market.category ?? 'sport';
+  const catLabel = CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] ?? market.category;
+  const iconColor = CATEGORY_COLORS[cat] ?? '#8d97b8';
   const opts     = market.options ?? [];
 
   return (
@@ -126,10 +127,10 @@ function LiveCard({ market }: { market: Partial<IMarket> }) {
         <div className="flex items-start justify-between px-5 pt-4 pb-3">
           <div className="flex items-center gap-3 min-w-0">
             <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
-              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.08)' }}
+              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+              style={{ background: `${iconColor}14`, border: `1px solid ${iconColor}30`, color: iconColor }}
             >
-              {icon}
+              <CategoryIcon slug={cat} size={18} strokeWidth={1.75} />
             </div>
             <div className="min-w-0">
               <p className="text-xs font-bold uppercase tracking-wider mb-0.5" style={{ color: '#4a5380' }}>
@@ -286,7 +287,7 @@ export default function LivePage() {
                   }}
                 >
                   <span className="flex items-center gap-2.5">
-                    <span style={{ fontSize: 15 }}>{cat.icon}</span>
+                    <CategoryIcon slug={cat.key} size={14} strokeWidth={2} />
                     <span className="font-semibold">{cat.label}</span>
                   </span>
                   {n > 0 && (
@@ -345,7 +346,7 @@ export default function LivePage() {
                   border: `1px solid ${activecat === cat.key ? 'rgba(0,230,118,0.4)' : 'rgba(255,255,255,0.08)'}`,
                 }}
               >
-                {cat.icon} {cat.label}
+                <CategoryIcon slug={cat.key} size={12} strokeWidth={2} className="shrink-0" /> {cat.label}
               </button>
             ))}
           </div>

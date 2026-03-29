@@ -6,7 +6,8 @@ import { useSearchParams } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import MarketCard from '@/components/markets/MarketCard';
 import DepositModal from '@/components/wallet/DepositModal';
-import { IMarket, MarketCategory, CATEGORY_LABELS, CATEGORY_ICONS } from '@/types';
+import { IMarket, MarketCategory, CATEGORY_LABELS } from '@/types';
+import CategoryIcon from '@/components/ui/CategoryIcon';
 import { OPTION_COLORS, genChartData } from '@/lib/demo-data';
 import { formatTimeLeft, formatCoins } from '@/lib/utils';
 import { ChevronLeft, ChevronRight, TrendingUp, Clock, Flame, ArrowUpRight } from 'lucide-react';
@@ -105,6 +106,17 @@ function HeroSlider({ markets }: { markets: IMarket[] }) {
   const go = useCallback((d: 'prev' | 'next') => {
     setDir(d === 'next' ? 'right' : 'left');
     setIdx((i) => d === 'next' ? (i + 1) % total : (i - 1 + total) % total);
+  }, [total]);
+
+  useEffect(() => {
+    if (total <= 1) return;
+
+    const interval = window.setInterval(() => {
+      setDir('right');
+      setIdx((current) => (current + 1) % total);
+    }, 4500);
+
+    return () => window.clearInterval(interval);
   }, [total]);
 
   const market = heroMarkets[idx];
@@ -253,13 +265,12 @@ function HeroSlider({ markets }: { markets: IMarket[] }) {
 function CategorySection({ category, markets }: { category: MarketCategory; markets: IMarket[] }) {
   if (!markets.length) return null;
   const label = CATEGORY_LABELS[category];
-  const icon  = CATEGORY_ICONS[category];
 
   return (
     <section className="mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-sm flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-          <span className="text-base">{icon}</span>
+          <CategoryIcon slug={category} size={14} strokeWidth={2} className="opacity-70" />
           {label}
         </h2>
         <Link
@@ -279,11 +290,105 @@ function CategorySection({ category, markets }: { category: MarketCategory; mark
   );
 }
 
+function AutoSlidingTrending({ markets }: { markets: IMarket[] }) {
+  const ROW_HEIGHT = 84;
+  const VISIBLE_ROWS = 4;
+  const [index, setIndex] = useState(0);
+  const [animate, setAnimate] = useState(true);
+
+  const items = markets.length > 1 ? [...markets, markets[0]] : markets;
+
+  useEffect(() => {
+    if (markets.length <= 1) return;
+
+    const interval = window.setInterval(() => {
+      setAnimate(true);
+      setIndex((current) => current + 1);
+    }, 3200);
+
+    return () => window.clearInterval(interval);
+  }, [markets.length]);
+
+  useEffect(() => {
+    if (markets.length <= 1 || index !== markets.length) return;
+
+    const timeout = window.setTimeout(() => {
+      setAnimate(false);
+      setIndex(0);
+    }, 450);
+
+    return () => window.clearTimeout(timeout);
+  }, [index, markets.length]);
+
+  useEffect(() => {
+    if (!animate) {
+      const frame = window.requestAnimationFrame(() => setAnimate(true));
+      return () => window.cancelAnimationFrame(frame);
+    }
+  }, [animate]);
+
+  return (
+    <div
+      className="overflow-hidden"
+      style={{ height: Math.min(markets.length, VISIBLE_ROWS) * ROW_HEIGHT }}
+    >
+      <div
+        className="flex flex-col"
+        style={{
+          transform: `translateY(-${index * ROW_HEIGHT}px)`,
+          transition: animate ? 'transform 0.45s ease' : 'none',
+        }}
+      >
+        {items.map((m, i) => (
+          <Link
+            key={`${String(m._id)}-${i}`}
+            href={`/market/${m._id}`}
+            className="flex items-start gap-2.5 py-2.5 group"
+            style={{
+              height: ROW_HEIGHT,
+              borderBottom: i < items.length - 1 ? '1px solid var(--border-light)' : 'none',
+            }}
+          >
+            <span
+              className="text-xs font-black w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5"
+              style={{ background: 'var(--bg-item-hover)', color: 'var(--text-muted)' }}
+            >
+              {(i % markets.length) + 1}
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold leading-snug transition-colors line-clamp-2" style={{ color: 'var(--text-bright)' }}>
+                {m.title}
+              </p>
+              <div className="flex items-center gap-2 mt-1.5">
+                <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--bg-item-hover)' }}>
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${m.options[0]?.probability ?? 50}%`, background: 'var(--accent-green)' }}
+                  />
+                </div>
+                <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>
+                  {m.options[0]?.label}
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col items-end shrink-0 gap-0.5">
+              <span className="text-sm font-black" style={{ color: 'var(--accent-green)' }}>{m.options[0]?.probability}%</span>
+              <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
+                ▲ {((m.options[0]?.probability ?? 50) % 13) + 1}
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Right Sidebar ────────────────────────────────────────────────────────────
 
 function RightSidebar({ markets }: { markets: IMarket[] }) {
   const top5     = [...markets].sort((a, b) => b.totalVolume - a.totalVolume).slice(0, 5);
-  const trending = markets.slice(0, 6);
+  const trending = markets.slice(0, 8);
   const featuredMarket = markets.find(m => m.status === 'live') ?? markets[0];
 
   return (
@@ -358,47 +463,7 @@ function RightSidebar({ markets }: { markets: IMarket[] }) {
             Tout voir
           </Link>
         </div>
-        <div className="flex flex-col">
-          {trending.map((m, i) => (
-            <Link
-              key={String(m._id)}
-              href={`/market/${m._id}`}
-              className="flex items-start gap-2.5 py-2.5 group"
-              style={{ borderBottom: i < trending.length - 1 ? '1px solid var(--border-light)' : 'none' }}
-            >
-              {/* Rang */}
-              <span
-                className="text-xs font-black w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5"
-                style={{ background: 'var(--bg-item-hover)', color: 'var(--text-muted)' }}
-              >
-                {i + 1}
-              </span>
-              {/* Titre + option */}
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold leading-snug transition-colors line-clamp-2" style={{ color: 'var(--text-bright)' }}>
-                  {m.title}
-                </p>
-                {/* Mini barre proba */}
-                <div className="flex items-center gap-2 mt-1.5">
-                  <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--bg-item-hover)' }}>
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${m.options[0]?.probability ?? 50}%`, background: 'var(--accent-green)' }}
-                    />
-                  </div>
-                  <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>{m.options[0]?.label}</span>
-                </div>
-              </div>
-              {/* % + delta */}
-              <div className="flex flex-col items-end shrink-0 gap-0.5">
-                <span className="text-sm font-black" style={{ color: 'var(--accent-green)' }}>{m.options[0]?.probability}%</span>
-                <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
-                  ▲ {((m.options[0]?.probability ?? 50) % 13) + 1}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <AutoSlidingTrending markets={trending} />
       </div>
 
       {/* ── Top Volume ── */}

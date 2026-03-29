@@ -9,7 +9,8 @@ import {
   ChevronRight, AlignLeft, Info, CalendarClock, ShieldCheck
 } from 'lucide-react';
 import { formatCoins, formatTimeLeft } from '@/lib/utils';
-import { CATEGORY_ICONS, CATEGORY_LABELS } from '@/types';
+import { CATEGORY_LABELS } from '@/types';
+import CategoryIcon, { CATEGORY_COLORS } from '@/components/ui/CategoryIcon';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface MarketOption { _id: string; label: string; probability: number; totalBets: number }
@@ -142,8 +143,8 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
   }
 
   const ss = STATUS_STYLE[market.status] ?? STATUS_STYLE.closed;
-  const catIcon  = CATEGORY_ICONS[market.category as keyof typeof CATEGORY_ICONS] ?? '🏷';
-  const catLabel = CATEGORY_LABELS[market.category as keyof typeof CATEGORY_LABELS] ?? market.category;
+  const catLabel   = CATEGORY_LABELS[market.category as keyof typeof CATEGORY_LABELS] ?? market.category;
+  const catColor   = CATEGORY_COLORS[market.category] ?? '#8d97b8';
   const totalBets = market.options.reduce((s, o) => s + o.totalBets, 0);
   const timeLeft  = formatTimeLeft(market.endsAt);
   const isExpired = new Date(market.endsAt) < new Date();
@@ -162,8 +163,9 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
       <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-sm p-6 md:p-8">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div className="flex gap-4 md:gap-6 items-start">
-            <div className="hidden sm:flex w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 items-center justify-center text-3xl shrink-0 shadow-sm">
-              {catIcon}
+            <div className="hidden sm:flex w-16 h-16 rounded-2xl items-center justify-center shrink-0 shadow-sm"
+              style={{ background: `${catColor}14`, border: `1.5px solid ${catColor}35`, color: catColor }}>
+              <CategoryIcon slug={market.category} size={28} strokeWidth={1.5} />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">

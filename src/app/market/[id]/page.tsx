@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import Header from '@/components/layout/Header';
 import DepositModal from '@/components/wallet/DepositModal';
-import { IMarket, CATEGORY_LABELS, CATEGORY_ICONS } from '@/types';
+import { IMarket, CATEGORY_LABELS } from '@/types';
+import CategoryIcon, { CATEGORY_COLORS } from '@/components/ui/CategoryIcon';
 import { BADGE_COLORS } from '@/lib/demo-data';
 import { formatCoins } from '@/lib/utils';
 import {
@@ -357,8 +358,8 @@ function TradePanel({
 
       {/* ── Header ── */}
       <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: '1px solid var(--border-light)' }}>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg shrink-0" style={{ background: 'var(--bg-item-hover)' }}>
-          {CATEGORY_ICONS[market.category]}
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'var(--bg-item-hover)', color: 'var(--text-secondary)' }}>
+          <CategoryIcon slug={market.category} size={15} strokeWidth={2} />
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{market.title}</p>
@@ -679,8 +680,8 @@ export default function MarketPage({ params }: PageProps) {
   }
 
   const isLive   = market.status === 'live';
-  const icon     = CATEGORY_ICONS[market.category];
   const catLabel = CATEGORY_LABELS[market.category];
+  const iconColor = CATEGORY_COLORS[market.category] ?? '#8d97b8';
   const mId      = String(market._id);
 
   const handleScrollToComments = () => {
@@ -804,14 +805,15 @@ export default function MarketPage({ params }: PageProps) {
 
             {/* Big icon (Kalshi style) */}
             <div
-              className="shrink-0 rounded-2xl flex items-center justify-center text-3xl"
+              className="shrink-0 rounded-2xl flex items-center justify-center"
               style={{
                 width: 72, height: 72,
-                background: 'rgba(0,230,118,0.1)',
-                border: '1.5px solid rgba(0,230,118,0.2)',
+                background: `${iconColor}14`,
+                border: `1.5px solid ${iconColor}35`,
+                color: iconColor,
               }}
             >
-              {icon}
+              <CategoryIcon slug={market.category} size={30} strokeWidth={1.5} />
             </div>
 
             {/* Title block */}
@@ -971,13 +973,14 @@ export default function MarketPage({ params }: PageProps) {
                 >
                   {/* Option icon */}
                   <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0"
+                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                     style={{
                       background: `${color}15`,
                       border: `1.5px solid ${color}30`,
+                      color,
                     }}
                   >
-                    {icon}
+                    <CategoryIcon slug={market.category} size={17} strokeWidth={1.75} />
                   </div>
 
                   {/* Name */}

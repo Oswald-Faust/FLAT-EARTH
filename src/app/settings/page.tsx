@@ -46,7 +46,7 @@ function SInput({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#4a5380' }}>
+      <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
         {label}
       </label>
       <input
@@ -57,9 +57,9 @@ function SInput({
         disabled={disabled}
         className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
         style={{
-          background: disabled ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.05)',
-          border: '1.5px solid rgba(255,255,255,0.1)',
-          color: disabled ? '#4a5380' : '#fff',
+          background: disabled ? 'var(--bg-item)' : 'var(--bg-input)',
+          border: '1.5px solid var(--border-medium)',
+          color: disabled ? 'var(--text-muted)' : 'var(--text-primary)',
           caretColor: '#00e676',
         }}
       />
@@ -74,14 +74,14 @@ function SectionCard({ title, icon, children }: {
   return (
     <div
       className="rounded-2xl overflow-hidden"
-      style={{ background: '#161b26', border: '1px solid rgba(255,255,255,0.07)' }}
+      style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
     >
       <div
         className="flex items-center gap-3 px-5 py-4"
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+        style={{ borderBottom: '1px solid var(--border)' }}
       >
         <span style={{ color: '#00e676' }}>{icon}</span>
-        <h2 className="text-sm font-bold" style={{ color: '#fff' }}>{title}</h2>
+        <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{title}</h2>
       </div>
       <div className="px-5 py-5 flex flex-col gap-4">
         {children}
@@ -98,8 +98,8 @@ function SaveBtn({ loading, disabled }: { loading: boolean; disabled: boolean })
       disabled={loading || disabled}
       className="px-5 py-2.5 rounded-xl text-sm font-black transition-all hover:brightness-110 active:scale-[0.98]"
       style={{
-        background: (!disabled && !loading) ? '#00e676' : 'rgba(255,255,255,0.08)',
-        color: (!disabled && !loading) ? '#000' : '#4a5380',
+        background: (!disabled && !loading) ? '#00e676' : 'var(--bg-item-hover)',
+        color: (!disabled && !loading) ? '#000' : 'var(--text-muted)',
       }}
     >
       {loading ? 'Enregistrement…' : 'Enregistrer'}
@@ -224,7 +224,7 @@ export default function SettingsPage() {
 
   if (status === 'loading' || !userData) {
     return (
-      <div className="flex flex-col min-h-screen" style={{ background: '#0f1117' }}>
+      <div className="flex flex-col min-h-screen" style={{ background: 'var(--bg-primary)' }}>
         <Header isLoggedIn={!!session} coins={0} liveCount={0} />
         <div className="flex-1 flex items-center justify-center">
           <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: '#00e676', borderTopColor: 'transparent' }} />
@@ -236,7 +236,7 @@ export default function SettingsPage() {
   const joinDate = new Date(userData.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ background: '#0f1117' }}>
+    <div className="flex flex-col min-h-screen" style={{ background: 'var(--bg-primary)' }}>
       <Header isLoggedIn={true} coins={userData.coins} liveCount={0} />
 
       <div className="flex-1">
@@ -244,12 +244,12 @@ export default function SettingsPage() {
 
           {/* Page header */}
           <div className="flex items-center gap-3 mb-8">
-            <Link href="/profile" className="p-2 rounded-xl hover:bg-white/5 transition-all" style={{ color: '#4a5380' }}>
+            <Link href="/profile" className="p-2 rounded-xl transition-all" style={{ color: 'var(--text-muted)' }}>
               <ChevronRight size={16} style={{ transform: 'rotate(180deg)' }} />
             </Link>
             <div>
-              <h1 className="text-2xl font-black" style={{ color: '#fff' }}>Paramètres</h1>
-              <p className="text-xs mt-0.5" style={{ color: '#4a5380' }}>
+              <h1 className="text-2xl font-black" style={{ color: 'var(--text-primary)' }}>Paramètres</h1>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                 Inscrit le {joinDate}
               </p>
             </div>
@@ -269,8 +269,8 @@ export default function SettingsPage() {
                     {(username[0] ?? '?').toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-sm font-bold" style={{ color: '#fff' }}>@{username}</p>
-                    <p className="text-xs" style={{ color: '#4a5380' }}>
+                    <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>@{username}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                       {userData.role === 'admin' ? '👑 Administrateur' : userData.role === 'creator' ? '✨ Créateur' : '👤 Utilisateur'}
                     </p>
                   </div>
@@ -351,11 +351,11 @@ export default function SettingsPage() {
                       <div key={label} className="flex items-center gap-2 text-xs">
                         <div
                           className="w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0"
-                          style={{ background: ok ? '#00e676' : 'rgba(255,255,255,0.1)' }}
+                          style={{ background: ok ? '#00e676' : 'var(--bg-item-hover)' }}
                         >
                           {ok && <Check size={8} color="#000" strokeWidth={3} />}
                         </div>
-                        <span style={{ color: ok ? '#00e676' : '#4a5380' }}>{label}</span>
+                        <span style={{ color: ok ? '#00e676' : 'var(--text-muted)' }}>{label}</span>
                       </div>
                     ))}
                   </div>
@@ -379,20 +379,20 @@ export default function SettingsPage() {
                 ].map(({ label, desc, value, onChange }) => (
                   <div key={label} className="flex items-center justify-between gap-4">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold" style={{ color: '#c0c8e8' }}>{label}</p>
-                      <p className="text-xs mt-0.5" style={{ color: '#4a5380' }}>{desc}</p>
+                      <p className="text-sm font-semibold" style={{ color: 'var(--text-bright)' }}>{label}</p>
+                      <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{desc}</p>
                     </div>
                     {/* Toggle switch */}
                     <button
                       type="button"
                       onClick={() => onChange(v => !v)}
                       className="relative w-11 h-6 rounded-full transition-all shrink-0"
-                      style={{ background: value ? '#00e676' : 'rgba(255,255,255,0.1)' }}
+                      style={{ background: value ? '#00e676' : 'var(--bg-item-hover)' }}
                     >
                       <span
                         className="absolute top-0.5 w-5 h-5 rounded-full transition-all"
                         style={{
-                          background: '#fff',
+                          background: 'var(--bg-card)',
                           left: value ? 'calc(100% - 22px)' : '2px',
                           boxShadow: '0 1px 4px rgba(0,0,0,0.4)',
                         }}
@@ -408,11 +408,11 @@ export default function SettingsPage() {
               <div className="flex flex-col gap-2">
                 <div
                   className="flex items-center justify-between px-4 py-3 rounded-xl"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+                  style={{ background: 'var(--bg-item)', border: '1px solid var(--border-light)' }}
                 >
                   <div>
-                    <p className="text-sm font-semibold" style={{ color: '#c0c8e8' }}>Authentification à deux facteurs</p>
-                    <p className="text-xs mt-0.5" style={{ color: '#4a5380' }}>Bientôt disponible (Phase 2)</p>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--text-bright)' }}>Authentification à deux facteurs</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Bientôt disponible (Phase 2)</p>
                   </div>
                   <span className="text-xs font-bold px-2 py-1 rounded-lg" style={{ background: 'rgba(255,215,0,0.1)', color: '#ffd700' }}>
                     À venir

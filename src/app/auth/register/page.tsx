@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { Eye, EyeOff, ArrowLeft, Check, X } from 'lucide-react';
 
@@ -88,11 +88,13 @@ function KInput({
 // ─── Page ──────────────────────────────────────────────────────────────────────
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [step,      setStep]     = useState(1); // 1=email 2=password 3=username 4=welcome
   const [email,     setEmail]    = useState('');
   const [password,  setPassword] = useState('');
   const [username,  setUsername] = useState('');
+  const [referralCode, setReferralCode] = useState(searchParams.get('ref') ?? '');
   const [showPass,  setShowPass] = useState(false);
   const [loading,   setLoading]  = useState(false);
   const [error,     setError]    = useState('');
@@ -141,7 +143,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password, referralCode }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? 'Erreur inscription'); setLoading(false); return; }
@@ -199,6 +201,14 @@ export default function RegisterPage() {
                 type="email" value={email} onChange={setEmail}
                 placeholder="Email" autoFocus error={!!error}
               />
+              <div className="mt-3">
+                <KInput
+                  value={referralCode}
+                  onChange={(value) => setReferralCode(value.toUpperCase())}
+                  placeholder="Code de parrainage (optionnel)"
+                  prefix="🎁"
+                />
+              </div>
               {error && <p className="mt-2 text-sm" style={{ color: '#f44336' }}>{error}</p>}
               <button
                 type="submit"

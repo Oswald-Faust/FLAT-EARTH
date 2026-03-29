@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
+import { Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-space',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'FlatEarth — La plateforme de paris',
@@ -10,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className="h-full">
+    <html lang="fr" className={`h-full ${spaceGrotesk.variable}`}>
       <head>
         {/* Anti-FOUC : applique la classe 'light' avant le premier rendu */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.add('light');})();` }} />

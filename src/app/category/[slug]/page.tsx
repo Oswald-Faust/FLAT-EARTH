@@ -4,7 +4,8 @@ import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import MarketCard from '@/components/markets/MarketCard';
-import { IMarket, CATEGORY_LABELS, CATEGORY_ICONS, CATEGORY_SUBCATEGORIES, MarketCategory } from '@/types';
+import { IMarket, CATEGORY_LABELS, CATEGORY_SUBCATEGORIES, MarketCategory } from '@/types';
+import CategoryIcon, { CATEGORY_COLORS } from '@/components/ui/CategoryIcon';
 import { Search, SlidersHorizontal, Bookmark, ChevronLeft } from 'lucide-react';
 
 interface PageProps {
@@ -15,7 +16,7 @@ export default function CategoryPage({ params }: PageProps) {
   const { slug } = use(params);
   const category = slug as MarketCategory;
   const label = CATEGORY_LABELS[category] ?? slug;
-  const icon  = CATEGORY_ICONS[category] ?? '🌍';
+  const iconColor = CATEGORY_COLORS[category] ?? '#8d97b8';
 
   const subcategories = CATEGORY_SUBCATEGORIES[slug] ?? [{ key: 'all', label: 'Tous', count: 0 }];
   const [activeSub, setActiveSub] = useState('all');
@@ -100,7 +101,7 @@ export default function CategoryPage({ params }: PageProps) {
             {/* Page header */}
             <div className="flex items-center justify-between mb-5">
               <h1 className="text-xl font-black flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-                <span>{icon}</span>
+                <span style={{ color: iconColor }}><CategoryIcon slug={category} size={18} strokeWidth={2} /></span>
                 {label}
                 {liveCount > 0 && (
                   <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(244,67,54,0.15)', color: '#f44336' }}>
@@ -155,7 +156,9 @@ export default function CategoryPage({ params }: PageProps) {
             {/* Empty */}
             {!loading && filteredMarkets.length === 0 && (
               <div className="text-center py-24" style={{ color: 'var(--text-muted)' }}>
-                <p className="text-5xl mb-4">{icon}</p>
+                <div className="flex justify-center mb-4" style={{ color: iconColor, opacity: 0.4 }}>
+                  <CategoryIcon slug={category} size={52} strokeWidth={1} />
+                </div>
                 <p className="text-sm">Aucun pari disponible dans cette catégorie pour le moment</p>
                 <Link href="/" className="mt-4 inline-flex items-center gap-1 text-xs" style={{ color: 'var(--accent-green)' }}>
                   <ChevronLeft size={12} /> Retour à l&apos;accueil
